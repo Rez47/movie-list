@@ -25,14 +25,15 @@ const theme = responsiveFontSizes(
       text: {
         primary: "#ffffff",
       },
-      // background: {
-      //   default: "#343A40",
-      // },
+      background: {
+        default: "#343A40",
+      },
       primary: {
-        main: "#1976d2",
+        main: "#1B2430",
       },
       secondary: {
-        main: "#dc004e",
+        main: "#272F37",
+        light: "#4A525A",
       },
       error: {
         main: "#AD2323",
