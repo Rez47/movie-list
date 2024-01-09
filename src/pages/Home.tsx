@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
 import { Movie, MovieList, Series, SeriesList } from "../services/apiTypes";
-import { getPopularMoviesList } from "../services/MoviesList/apiGetMoviesList";
+import {
+  getNowPlayingMoviesList,
+  getPopularMoviesList,
+} from "../services/MoviesList/apiGetMoviesList";
 import { callApi } from "../services/callApi";
 import SmallMovieList from "../components/SmallComponents/List/SmallMovieList";
 import { getPopularSeriesList } from "../services/SeriesList/apiGetSeriesList";
+import Layout from "../components/Layout/Layout";
 
 const Home = () => {
-  const [moviesData, setMoviesData] = useState<Movie[]>([]);
-  const [seriesData, setSeriesData] = useState<Series[]>([]);
+  const [popularMoviesData, setPopularMoviesData] = useState<Movie[]>([]);
+  const [popularSeriesData, setPopularSeriesData] = useState<Series[]>([]);
+  const [nowPlayingMoviesData, setNowPlayingMoviesData] = useState<Movie[]>([]);
+
   useEffect(() => {
     (async () => {
       try {
@@ -15,12 +21,17 @@ const Home = () => {
           query: getPopularMoviesList("1"),
         });
 
-        setMoviesData(popularMoviesData.results);
+        setPopularMoviesData(popularMoviesData.results);
 
         const popularSeriesData = await callApi<SeriesList>({
           query: getPopularSeriesList("1"),
         });
-        setSeriesData(popularSeriesData.results);
+        setPopularSeriesData(popularSeriesData.results);
+
+        const nowPlayingMoviesData = await callApi<MovieList>({
+          query: getNowPlayingMoviesList("1"),
+        });
+        setNowPlayingMoviesData(nowPlayingMoviesData.results);
       } catch (err) {
         console.log(err);
       }
@@ -29,16 +40,23 @@ const Home = () => {
 
   return (
     <>
-      <SmallMovieList
-        title="Popular Movies"
-        moviesData={moviesData}
-        setMoviesData={setMoviesData}
-      />
-      <SmallMovieList
-        title="Popular Series"
-        seriesData={seriesData}
-        setSeriesData={setSeriesData}
-      />
+      <Layout>
+        <SmallMovieList
+          title="Popular Movies"
+          moviesData={popularMoviesData}
+          setMoviesData={setPopularMoviesData}
+        />
+        <SmallMovieList
+          title="Popular Series"
+          seriesData={popularSeriesData}
+          setSeriesData={setPopularSeriesData}
+        />
+        <SmallMovieList
+          title="Now Playing on Cinema"
+          nowPlayingMoviesData={nowPlayingMoviesData}
+          setNowPlayingMoviesData={setNowPlayingMoviesData}
+        />
+      </Layout>
     </>
   );
 };

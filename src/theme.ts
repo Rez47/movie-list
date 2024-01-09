@@ -1,4 +1,19 @@
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
+declare module "@mui/material/styles" {
+  interface PaletteOptions {
+    customColors: {
+      gold?: string;
+      trasparentGray: string;
+    };
+  }
+
+  interface Palette {
+    customColors: {
+      gold?: string;
+      trasparentGray: string;
+    };
+  }
+}
 
 const staticThemeColors = {
   grey: {
@@ -47,6 +62,10 @@ const theme = responsiveFontSizes(
         main: "#008A3A",
         contrastText: "#FFFFFF",
       },
+      customColors: {
+        gold: "#dbc323",
+        trasparentGray: "rgba(67, 67, 67, 0.3)",
+      },
       grey: staticThemeColors.grey,
     },
     typography: {
@@ -77,6 +96,18 @@ const theme = responsiveFontSizes(
       h6: {
         fontWeight: 600,
         fontSize: "0.95rem",
+      },
+      body2: {
+        color: "#c2c2c2",
+      },
+    },
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 768,
+        md: 960,
+        lg: 1280,
+        xl: 1920,
       },
     },
   })

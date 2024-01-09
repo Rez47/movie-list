@@ -8,7 +8,10 @@ import {
 import MovieCard from "../Cards/MovieCard";
 import { Dispatch, SetStateAction, useState } from "react";
 import { callApi } from "../../../services/callApi";
-import { getPopularMoviesList } from "../../../services/MoviesList/apiGetMoviesList";
+import {
+  getNowPlayingMoviesList,
+  getPopularMoviesList,
+} from "../../../services/MoviesList/apiGetMoviesList";
 import SeriesCard from "../Cards/SeriesCard";
 import { getPopularSeriesList } from "../../../services/SeriesList/apiGetSeriesList";
 
@@ -18,6 +21,8 @@ interface SmallMovieListProps {
   setMoviesData?: Dispatch<SetStateAction<Movie[]>>;
   seriesData?: Series[];
   setSeriesData?: Dispatch<SetStateAction<Series[]>>;
+  nowPlayingMoviesData?: Movie[];
+  setNowPlayingMoviesData?: Dispatch<SetStateAction<Movie[]>>;
 }
 
 const SmallMovieList: React.FC<SmallMovieListProps> = ({
@@ -26,23 +31,40 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
   setMoviesData,
   seriesData,
   setSeriesData,
+  nowPlayingMoviesData,
+  setNowPlayingMoviesData,
 }) => {
   const [moviesPage, setMoviesPage] = useState<number>(1);
   const [seriesPage, setSeriesPage] = useState<number>(1);
+  const movieType = moviesData
+    ? "popular"
+    : nowPlayingMoviesData
+    ? "nowPlaying"
+    : "popular";
 
   const handleMoviesPageChange = async (
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {
+    console.log(movieType);
     if (moviesPage === value) return;
     setMoviesPage(value);
-    if (moviesPage && moviesData && setMoviesData) {
+    if (moviesPage) {
       try {
-        const popularMoviesData = await callApi<MovieList>({
-          query: getPopularMoviesList(moviesPage.toString()),
+        const getMoviesData = await callApi<MovieList>({
+          query:
+            movieType === "popular"
+              ? getPopularMoviesList(moviesPage.toString())
+              : movieType === "nowPlaying"
+              ? getNowPlayingMoviesList(moviesPage.toString())
+              : getPopularMoviesList(moviesPage.toString()),
         });
 
-        setMoviesData(popularMoviesData.results);
+        if (moviesData && setMoviesData) {
+          setMoviesData(getMoviesData.results);
+        } else if (nowPlayingMoviesData && setNowPlayingMoviesData) {
+          setNowPlayingMoviesData(getMoviesData.results);
+        }
       } catch (err) {
         console.log(err);
       }
@@ -73,23 +95,34 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
       <Typography component="h2" variant="h2">
         {title}
       </Typography>
-      {moviesData && (
-        <Box
-          sx={{
-            width: "100%",
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(160px, max-content))",
-            gap: 2,
-            mt: 2,
-            justifyContent: "center",
-          }}
-        >
-          {moviesData.length > 0 &&
-            moviesData.map((movieData) => {
-              return <MovieCard movieData={movieData} />;
-            })}
-        </Box>
-      )}
+      <Box
+        sx={{
+          width: "100%",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(160px, max-content))",
+          gap: 2,
+          mt: 2,
+          justifyContent: "center",
+        }}
+      >
+        {moviesData && (
+          <>
+            {moviesData.length > 0 &&
+              moviesData.map((movieData) => {
+                return <MovieCard movieData={movieData} />;
+              })}
+          </>
+        )}
+        {nowPlayingMoviesData && (
+          <>
+            {nowPlayingMoviesData.length > 0 &&
+              nowPlayingMoviesData.map((movieData) => {
+                return <MovieCard movieData={movieData} />;
+              })}
+          </>
+        )}
+      </Box>
+
       {seriesData && (
         <Box
           sx={{
@@ -113,9 +146,11 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
           variant="outlined"
           shape="rounded"
           onChange={
-            moviesData ? handleMoviesPageChange : handleSeriesPageChange
+            moviesData || nowPlayingMoviesData
+              ? handleMoviesPageChange
+              : handleSeriesPageChange
           }
-          page={moviesData ? moviesPage : seriesPage}
+          page={moviesData || nowPlayingMoviesData ? moviesPage : seriesPage}
         />
       </Stack>
     </Box>
