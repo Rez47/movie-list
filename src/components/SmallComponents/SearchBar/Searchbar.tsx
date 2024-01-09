@@ -2,12 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, InputBase, useTheme } from "@mui/material";
-import {
-  Movie,
-  SearchList,
-  SearchResults,
-  Series,
-} from "../../../services/apiTypes";
+import { SearchList, SearchResults } from "../../../services/apiTypes";
 import { callApi } from "../../../services/callApi";
 import { getSearchMulti } from "../../../services/Search/apiGetSearchMulti";
 
