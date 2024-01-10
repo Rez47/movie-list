@@ -70,7 +70,7 @@ const Nav = () => {
             MEDIALIST
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", sm: "none" } }}>
+          <Box sx={{ flexGrow: 0, display: { xs: "flex", sm: "none" } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -97,6 +97,8 @@ const Nav = () => {
               onClose={handleCloseNavMenu}
               sx={{
                 display: { xs: "block", sm: "none" },
+                height: "auto",
+                minHeight: "10rem",
               }}
             >
               {pages.map((content, index) => (

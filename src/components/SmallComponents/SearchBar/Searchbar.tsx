@@ -1,10 +1,17 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
-import { Box, InputBase, useTheme } from "@mui/material";
+import {
+  Box,
+  ClickAwayListener,
+  InputBase,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { SearchList, SearchResults } from "../../../services/apiTypes";
 import { callApi } from "../../../services/callApi";
 import { getSearchMulti } from "../../../services/Search/apiGetSearchMulti";
+import { Link } from "react-router-dom";
 
 interface SearchBarProps {
   iconColor?: string;
@@ -51,10 +58,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
     setText(e.target.value);
   };
 
-  const handleInputBlur = () => {
+  const handleClickAway = () => {
+    setText("");
     setIsInputOpen(false);
-    // Perform actions with the entered text
-    console.log("Entered text:", text);
   };
 
   const handleMouseEnter = () => {
@@ -62,69 +68,107 @@ const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   return (
-    <div style={{}}>
-      <Box sx={{ position: "relative" }}></Box>
-      {!isInputOpen ? (
-        <IconButton onClick={handleIconClick} onMouseEnter={handleMouseEnter}>
-          <SearchIcon sx={{ color: iconColor, margin: iconMargin }} />
-        </IconButton>
-      ) : (
-        <InputBase
-          value={text}
-          onChange={handleInputChange}
-          onBlur={handleInputBlur}
-          autoFocus
-          placeholder="Search..."
-          endAdornment={<SearchIcon />}
-          sx={{
-            backgroundColor: inputBackground,
-            margin: inputMargin,
-            padding: "0 1rem",
-            borderRadius: "0.5rem",
-            border: "0",
-            unset: "all",
-          }}
-          inputProps={{
-            style: { border: "none", textDecoration: "none" },
-          }}
-        />
-      )}
-
-      <Box
-        sx={{
-          position: "absolute",
-          maxWidth: "20rem",
-          maxHeight: "20rem",
-          padding: "1rem",
-          top: "6rem",
-          left: "1rem",
-          zIndex: "999",
-          overflowY: "scroll",
-          backgroundColor: `${theme.palette.primary.main}`,
-          scrollbarWidth: "1rem",
-        }}
-      >
-        {text && (
-          <Box>
-            {searchData.map((media) => (
-              <Box
-                key={media.id}
-                width={170}
-                height={220}
-                sx={{
-                  backgroundImage: `url(https://image.tmdb.org/t/p/original${media.poster_path})`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  backgroundSize: "cover",
-                  borderRadius: "5px",
-                  marginBottom: 1,
-                }}
-              ></Box>
-            ))}
-          </Box>
+    <ClickAwayListener onClickAway={handleClickAway}>
+      <Box sx={{ position: "relative" }}>
+        {!isInputOpen ? (
+          <IconButton onClick={handleIconClick} onMouseEnter={handleMouseEnter}>
+            <SearchIcon sx={{ color: iconColor, margin: iconMargin }} />
+          </IconButton>
+        ) : (
+          <InputBase
+            value={text}
+            onChange={handleInputChange}
+            autoFocus
+            placeholder="Search..."
+            endAdornment={<SearchIcon />}
+            sx={{
+              backgroundColor: inputBackground,
+              margin: inputMargin,
+              padding: "0 1rem",
+              borderRadius: "0.5rem",
+              border: "0",
+              unset: "all",
+            }}
+            inputProps={{
+              style: { border: "none", textDecoration: "none" },
+            }}
+          />
         )}
+
+        <Box
+          sx={{
+            position: "absolute",
+            maxWidth: "24rem",
+            maxHeight: "27rem",
+            // padding: "1rem",
+            top: "4rem",
+            left: "0rem",
+            zIndex: "999",
+            overflowY: "scroll",
+            backgroundColor: `${theme.palette.primary.main}`,
+            scrollbarWidth: "1rem",
+          }}
+        >
+          {text && (
+            <Box>
+              {searchData.map((item) => (
+                <Link
+                  to={
+                    item.media_type === "tv"
+                      ? `/series/${item.id}`
+                      : `/movie/${item.id}`
+                  }
+                  style={{ textDecoration: "none", color: "inherit" }}
+                  onClick={() => setText("")}
+                >
+                  <Box
+                    margin={2}
+                    display={"flex"}
+                    gap={2}
+                    sx={{
+                      ":hover": {
+                        backgroundColor: theme.palette.secondary.main,
+                        cursor: "pointer",
+                      },
+                      padding: "1rem",
+                      borderRadius: "1rem",
+                    }}
+                  >
+                    <Box
+                      key={item.id}
+                      minWidth={120}
+                      height={160}
+                      sx={{
+                        backgroundImage: `url(https://image.tmdb.org/t/p/original${item.poster_path})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "cover",
+                        borderRadius: "5px",
+                        marginBottom: 1,
+                      }}
+                    ></Box>
+                    <Box>
+                      <Typography component="p" variant="body1">
+                        {item.title}
+                      </Typography>
+                      <Typography component="p" variant="body2">
+                        IMDb Score: {item.vote_average}
+                      </Typography>
+                      <Typography component="p" variant="body1">
+                        {item.release_date || item.first_air_date}
+                      </Typography>
+                      <Typography>
+                        {item.media_type !== "tv" ? "Movie" : "Series"}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Link>
+              ))}
+            </Box>
+          )}
+        </Box>
       </Box>
-    </div>
+    </ClickAwayListener>
   );
 };
 export default SearchBar;

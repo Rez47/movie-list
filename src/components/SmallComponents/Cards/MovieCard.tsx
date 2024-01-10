@@ -9,7 +9,10 @@ interface MovieCardProps {
 
 const MovieCard: React.FC<MovieCardProps> = ({ movieData }) => {
   return (
-    <Link to={`/movie/${movieData.id}`}>
+    <Link
+      to={`/movie/${movieData.id}`}
+      style={{ textDecoration: "none", color: "inherit" }}
+    >
       <Card
         sx={{
           width: 170,

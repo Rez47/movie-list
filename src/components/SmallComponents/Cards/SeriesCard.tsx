@@ -9,7 +9,10 @@ interface SeriesCardProps {
 
 const SeriesCard: React.FC<SeriesCardProps> = ({ seriesData }) => {
   return (
-    <Link to={`/series/${seriesData.id}`}>
+    <Link
+      to={`/series/${seriesData.id}`}
+      style={{ textDecoration: "none", color: "inherit" }}
+    >
       <Card
         sx={{
           width: 170,

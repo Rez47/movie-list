@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { callApi } from "../services/callApi";
 import { Movie as MovieType } from "../services/apiTypes";
@@ -109,7 +109,14 @@ const Movie = () => {
                 >
                   Production Country:{" "}
                 </span>
-                {movieData?.production_countries.map((country) => country.name)}
+                {movieData?.production_countries.map(
+                  (country, index, array) => (
+                    <React.Fragment key={index}>
+                      {country.name}
+                      {index < array.length - 1 && ", "}
+                    </React.Fragment>
+                  )
+                )}
               </Typography>
             </Stack>
           </Stack>
