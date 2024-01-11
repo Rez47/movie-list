@@ -170,11 +170,31 @@ const Register = () => {
           Register
         </Button>
 
-        <Box>
-          <Typography component="span" variant="body2">
-            Already have an account?{" "}
-          </Typography>
-          <Link href="/auth/login">Login</Link>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          gap={1}
+        >
+          <Box>
+            <Typography component="span" variant="body2">
+              Already have an account?{" "}
+            </Typography>
+            <Link href="/auth/Login">Login</Link>
+          </Box>
+
+          <Box>
+            <Link href="/">
+              <Typography
+                component="p"
+                variant="body2"
+                sx={{ fontSize: "0.8rem" }}
+              >
+                Just want to checkout? Click to go to homepage.
+              </Typography>
+            </Link>
+          </Box>
         </Box>
       </Stack>
     </Container>

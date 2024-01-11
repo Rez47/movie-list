@@ -138,11 +138,31 @@ const Login = () => {
           Login
         </Button>
 
-        <Box>
-          <Typography component="span" variant="body2">
-            Doesn't have accoung?{" "}
-          </Typography>
-          <Link href="/auth/register">Register</Link>
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          gap={1}
+        >
+          <Box>
+            <Typography component="span" variant="body2">
+              Don't have account?{" "}
+            </Typography>
+            <Link href="/auth/register">Register</Link>
+          </Box>
+
+          <Box>
+            <Link href="/">
+              <Typography
+                component="p"
+                variant="body2"
+                sx={{ fontSize: "0.8rem" }}
+              >
+                Just want to checkout? Click to go to homepage.
+              </Typography>
+            </Link>
+          </Box>
         </Box>
       </Stack>
     </Container>
