@@ -110,6 +110,57 @@ const theme = responsiveFontSizes(
         xl: 1920,
       },
     },
+    components: {
+      MuiContainer: {
+        styleOverrides: {
+          root: {
+            width: "100% !important",
+            maxWidth: "100vw !important",
+            marginLeft: "0 !important",
+            marginRight: "0 !important",
+            paddingLeft: "0 !important",
+            paddingRight: "0 !important",
+          },
+        },
+      },
+      MuiLink: {
+        styleOverrides: {
+          root: {
+            color: "#FFFFFF",
+          },
+        },
+      },
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            width: "100%",
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "#808080",
+              },
+              "&:hover fieldset": {
+                borderColor: "#808080",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "#808080",
+              },
+            },
+            "& .MuiInputLabel-root": {
+              color: "#FFFFFF",
+              "&.Mui-focused": {
+                color: "#FFFFFF",
+              },
+            },
+            "& .MuiOutlinedInput-input": {
+              color: "#FFFFFF",
+            },
+            "& .MuiOutlinedInput-placeholder": {
+              color: "#FFFFFF",
+            },
+          },
+        },
+      },
+    },
   })
 );
 

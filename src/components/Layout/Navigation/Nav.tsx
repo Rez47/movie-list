@@ -1,4 +1,3 @@
-import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,20 +10,61 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
-import theme from "../../../theme";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../../SmallComponents/SearchBar/Searchbar";
+import { Theme, useTheme } from "@mui/material";
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../../config/firebase";
+import LogoutIcon from "@mui/icons-material/Logout";
 
-const pages = [{ page: "Home", link: "/" }];
-const settings = ["Profile", "Favorites", "Watch List"];
+const styles = (theme: Theme) => ({
+  text: {
+    mr: 2,
+    display: { xs: "none", sm: "flex" },
+    fontFamily: "monospace",
+    fontWeight: 700,
+    letterSpacing: ".3rem",
+    color: "inherit",
+    textDecoration: "none",
+  },
+  asd: {
+    mr: 2,
+    display: { xs: "flex", sm: "none" },
+    flexGrow: 1,
+    fontFamily: "monospace",
+    fontWeight: 700,
+    letterSpacing: ".3rem",
+    // color: theme.palette.primary.main,
+    color: "inherit",
+    textDecoration: "none",
+  },
+});
+
+interface Pages {
+  page: string;
+  link: string;
+}
+
+const pages: Pages[] = [{ page: "Home", link: "/" }];
+const settings: string[] = ["Profile", "Favorites", "Watch List"];
 
 const Nav = () => {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
+  const theme = useTheme();
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUser(user);
+      } else {
+        console.log("user is logged out");
+      }
+    });
+  }, []);
+
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -46,6 +86,15 @@ const Nav = () => {
     handleCloseNavMenu();
   };
 
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+      navigate("/auth/login");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
@@ -57,15 +106,7 @@ const Nav = () => {
             component="a"
             href="#app-bar-with-responsive-menu"
             onClick={() => handleMenuItemClick("/")}
-            sx={{
-              mr: 2,
-              display: { xs: "none", sm: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
+            sx={styles(theme).text}
           >
             MEDIALIST
           </Typography>
@@ -82,7 +123,6 @@ const Nav = () => {
               <MenuIcon />
             </IconButton>
             <Menu
-              id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: "bottom",
@@ -127,16 +167,7 @@ const Nav = () => {
             component="a"
             href="#app-bar-with-responsive-menu"
             onClick={() => handleMenuItemClick("/")}
-            sx={{
-              mr: 2,
-              display: { xs: "flex", sm: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
+            sx={styles(theme).asd}
           >
             MEDIALIST
           </Typography>
@@ -163,7 +194,7 @@ const Nav = () => {
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Typography sx={{ color: `${theme.palette.common.white}` }}>
-                  PROFILE
+                  {currentUser ? currentUser.email : "PROFILE"}
                 </Typography>
               </IconButton>
             </Tooltip>
@@ -193,6 +224,10 @@ const Nav = () => {
                 </MenuItem>
               ))}
             </Menu>
+
+            <IconButton onClick={handleLogout} sx={{ p: 0 }}>
+              <LogoutIcon />
+            </IconButton>
           </Box>
         </Toolbar>
       </Container>

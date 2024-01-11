@@ -4,6 +4,8 @@ import Home from "./pages/Home";
 import Movie from "./pages/Movie";
 import Series from "./pages/Series";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Register from "./pages/auth/Register";
+import Login from "./pages/auth/Login";
 
 const App = () => {
   return (
@@ -14,6 +16,9 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/movie/:id" element={<Movie />} />
           <Route path="/series/:id" element={<Series />} />
+
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/register" element={<Register />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

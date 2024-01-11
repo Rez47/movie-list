@@ -28,10 +28,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
   inputBackground,
   inputMargin,
 }) => {
+  const theme = useTheme();
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [text, setText] = useState("");
   const [searchData, setSearchData] = useState<SearchResults[]>([]);
-  const theme = useTheme();
 
   useEffect(() => {
     const searchQuery = async () => {
@@ -152,10 +152,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
                         {item.title}
                       </Typography>
                       <Typography component="p" variant="body2">
-                        IMDb Score: {item.vote_average}
+                        IMDb Score: {item?.vote_average?.toFixed(1)}
                       </Typography>
                       <Typography component="p" variant="body1">
-                        {item.release_date || item.first_air_date}
+                        {item.release_date || item?.first_air_date}
                       </Typography>
                       <Typography>
                         {item.media_type !== "tv" ? "Movie" : "Series"}

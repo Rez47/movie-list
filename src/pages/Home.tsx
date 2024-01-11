@@ -8,11 +8,17 @@ import { callApi } from "../services/callApi";
 import SmallMovieList from "../components/SmallComponents/List/SmallMovieList";
 import { getPopularSeriesList } from "../services/SeriesList/apiGetSeriesList";
 import Layout from "../components/Layout/Layout";
+// import Alert, { AlertType } from "../components/MUIComponents/Alert";
 
 const Home = () => {
   const [popularMoviesData, setPopularMoviesData] = useState<Movie[]>([]);
   const [popularSeriesData, setPopularSeriesData] = useState<Series[]>([]);
   const [nowPlayingMoviesData, setNowPlayingMoviesData] = useState<Movie[]>([]);
+  // const [showAlert, setShowAlert] = useState<boolean>(false);
+  // const [alert, setAlert] = useState<AlertType>({
+  //   message: "",
+  //   severity: "error",
+  // });
 
   useEffect(() => {
     (async () => {
@@ -21,19 +27,27 @@ const Home = () => {
           query: getPopularMoviesList("1"),
         });
 
-        setPopularMoviesData(popularMoviesData.results);
-
         const popularSeriesData = await callApi<SeriesList>({
           query: getPopularSeriesList("1"),
         });
-        setPopularSeriesData(popularSeriesData.results);
 
         const nowPlayingMoviesData = await callApi<MovieList>({
           query: getNowPlayingMoviesList("1"),
         });
+
+        setPopularMoviesData(popularMoviesData.results);
+
+        setPopularSeriesData(popularSeriesData.results);
+
         setNowPlayingMoviesData(nowPlayingMoviesData.results);
       } catch (err) {
+        // setShowAlert(true);
+        // setAlert({
+        //   message: "There was a problem fetching movies",
+        //   severity: "info",
+        // });
         console.log(err);
+        throw new Error("There was a problem fetching movies: " + err);
       }
     })();
   }, []);
@@ -46,6 +60,13 @@ const Home = () => {
           moviesData={popularMoviesData}
           setMoviesData={setPopularMoviesData}
         />
+        {/* <Alert
+          severity={alert.severity}
+          text={alert.message}
+          showError={showAlert}
+          setShowError={setShowAlert}
+          isStatic
+        /> */}
         <SmallMovieList
           title="Popular Series"
           seriesData={popularSeriesData}

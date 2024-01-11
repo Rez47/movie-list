@@ -9,6 +9,7 @@ import Layout from "../components/Layout/Layout";
 const Movie = () => {
   const { id } = useParams();
   const [movieData, setMoviesData] = useState<MovieType>();
+
   useEffect(() => {
     (async () => {
       try {
@@ -109,14 +110,21 @@ const Movie = () => {
                 >
                   Production Country:{" "}
                 </span>
-                {movieData?.production_countries.map(
-                  (country, index, array) => (
-                    <React.Fragment key={index}>
-                      {country.name}
-                      {index < array.length - 1 && ", "}
-                    </React.Fragment>
-                  )
-                )}
+                <Stack
+                  direction="row"
+                  justifyContent="flex-start"
+                  alignItems="center"
+                  gap={1}
+                >
+                  {movieData?.production_countries.map(
+                    (country, index, array) => (
+                      <Typography key={`${index}-${country.name}`}>
+                        {country.name}
+                        {index < array.length - 1 && ","}
+                      </Typography>
+                    )
+                  )}
+                </Stack>
               </Typography>
             </Stack>
           </Stack>
