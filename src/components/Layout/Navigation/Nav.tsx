@@ -1,13 +1,4 @@
-import {
-  AppBar,
-  Box,
-  Toolbar,
-  Typography,
-  Container,
-  Button,
-  Link,
-} from "@mui/material/";
-import AdbIcon from "@mui/icons-material/Adb";
+import { AppBar, Box, Button, Link } from "@mui/material/";
 
 import SearchBar from "../../SmallComponents/SearchBar/Searchbar";
 import { useTheme } from "@mui/material";
