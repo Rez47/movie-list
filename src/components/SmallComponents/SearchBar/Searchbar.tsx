@@ -48,7 +48,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       }
     };
     searchQuery();
-  }, [text, setSearchData]);
+  }, [text]);
 
   const handleIconClick = () => {
     setIsInputOpen(true);
@@ -66,6 +66,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const handleMouseEnter = () => {
     setIsInputOpen(true);
   };
+
+  // console.log(text);
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
@@ -108,81 +110,82 @@ const SearchBar: React.FC<SearchBarProps> = ({
             scrollbarWidth: "1rem",
           }}
         >
-          {text && searchData.length === 0 ? (
-            <Typography
-              component="p"
-              variant="body2"
-              sx={{
-                textAlign: "center",
-                py: "4rem",
-                px: "5rem",
-                mt: { xs: "1rem", sm: 0 },
-              }}
-            >
-              No items found
-            </Typography>
-          ) : (
-            <Box>
-              {searchData.map((item) => {
-                if (!item.poster_path) {
-                  return "";
-                }
-                return (
-                  <Link
-                    to={
-                      item.media_type === "tv"
-                        ? `/series/${item.id}`
-                        : `/movie/${item.id}`
-                    }
-                    style={{ textDecoration: "none", color: "inherit" }}
-                    onClick={() => setText("")}
-                  >
-                    <Box
-                      margin={2}
-                      display={"flex"}
-                      gap={2}
-                      sx={{
-                        ":hover": {
-                          backgroundColor: theme.palette.secondary.main,
-                          cursor: "pointer",
-                        },
-                        padding: "1rem",
-                        borderRadius: "1rem",
-                      }}
+          {text &&
+            (searchData.length === 0 ? (
+              <Typography
+                component="p"
+                variant="body2"
+                sx={{
+                  textAlign: "center",
+                  py: "4rem",
+                  px: "5rem",
+                  mt: { xs: "1rem", sm: 0 },
+                }}
+              >
+                No items found
+              </Typography>
+            ) : (
+              <Box>
+                {searchData.map((item) => {
+                  if (!item.poster_path) {
+                    return "";
+                  }
+                  return (
+                    <Link
+                      to={
+                        item.media_type === "tv"
+                          ? `/series/${item.id}`
+                          : `/movie/${item.id}`
+                      }
+                      style={{ textDecoration: "none", color: "inherit" }}
+                      onClick={() => setText("")}
                     >
                       <Box
-                        key={item.id}
-                        minWidth={120}
-                        height={160}
+                        margin={2}
+                        display={"flex"}
+                        gap={2}
                         sx={{
-                          backgroundImage: `url(https://image.tmdb.org/t/p/original${item.poster_path})`,
-                          backgroundRepeat: "no-repeat",
-                          backgroundPosition: "center",
-                          backgroundSize: "cover",
-                          borderRadius: "5px",
-                          marginBottom: 1,
+                          ":hover": {
+                            backgroundColor: theme.palette.secondary.main,
+                            cursor: "pointer",
+                          },
+                          padding: "1rem",
+                          borderRadius: "1rem",
                         }}
-                      ></Box>
-                      <Box>
-                        <Typography component="p" variant="body1">
-                          {item.title}
-                        </Typography>
-                        <Typography component="p" variant="body2">
-                          IMDb Score: {item.vote_average}
-                        </Typography>
-                        <Typography component="p" variant="body1">
-                          {item.release_date || item.first_air_date}
-                        </Typography>
-                        <Typography>
-                          {item.media_type !== "tv" ? "Movie" : "Series"}
-                        </Typography>
+                      >
+                        <Box
+                          key={item.id}
+                          minWidth={120}
+                          height={160}
+                          sx={{
+                            backgroundImage: `url(https://image.tmdb.org/t/p/original${item.poster_path})`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                            backgroundSize: "cover",
+                            borderRadius: "5px",
+                            marginBottom: 1,
+                          }}
+                        ></Box>
+                        <Box>
+                          <Typography component="p" variant="body1">
+                            {item.title}
+                          </Typography>
+                          <Typography component="p" variant="body2">
+                            IMDb Score: {item.vote_average}
+                          </Typography>
+                          <Typography component="p" variant="body1">
+                            {item.release_date || item.first_air_date}
+                          </Typography>
+                          <Typography>
+                            {item.media_type !== "tv" ? "Movie" : "Series"}
+                          </Typography>
+                        </Box>
                       </Box>
-                    </Box>
-                  </Link>
-                );
-              })}
-            </Box>
-          )}
+                    </Link>
+                  );
+                })}
+              </Box>
+            ))}
         </Box>
       </Box>
     </ClickAwayListener>
