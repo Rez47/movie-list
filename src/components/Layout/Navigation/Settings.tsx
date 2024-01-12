@@ -19,9 +19,9 @@ interface Pages {
 }
 
 const settings: Pages[] = [
-  { page: "Profile", link: "/profile" },
-  { page: "Favorites", link: "/favorites" },
-  { page: "Watch List", link: "/watchlist" },
+  { page: "Profile", link: "/user/profile" },
+  { page: "Favorites", link: "/user/favorites" },
+  { page: "Watch List", link: "/user/watchlist" },
 ];
 
 const Settings = () => {

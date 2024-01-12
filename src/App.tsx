@@ -7,6 +7,8 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import Profile from "./pages/user/Profile";
+import Favorites from "./pages/user/Favorites";
+import Watchlist from "./pages/user/Watchlist";
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
           <Route path="/auth/register" element={<Register />} />
 
           <Route path="/user/profile" element={<Profile />} />
+          <Route path="/user/favorites" element={<Favorites />} />
+          <Route path="/user/watchlist" element={<Watchlist />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>
