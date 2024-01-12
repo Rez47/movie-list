@@ -127,6 +127,7 @@ const theme = responsiveFontSizes(
         styleOverrides: {
           root: {
             color: "#FFFFFF",
+            textDecoration: "none",
           },
         },
       },
@@ -157,6 +158,13 @@ const theme = responsiveFontSizes(
             "& .MuiOutlinedInput-placeholder": {
               color: "#FFFFFF",
             },
+          },
+        },
+      },
+      MuiIconButton: {
+        styleOverrides: {
+          root: {
+            color: "inherit",
           },
         },
       },

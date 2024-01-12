@@ -14,8 +14,11 @@ import Alert, { AlertType } from "../../components/MUIComponents/Alert";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../config/firebase";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/slices/userSlices";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const theme = useTheme();
   const [email, setEmail] = useState<string>("");
@@ -48,6 +51,7 @@ const Login = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password).then((user) => {
+        dispatch(login(user));
         navigate("/");
         setLoading(false);
       });

@@ -4,7 +4,6 @@ import {
   Link,
   Menu,
   MenuItem,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import theme from "../../../theme";
@@ -12,27 +11,22 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../config/firebase";
+import { userDropDownPages } from "../../Layout/Navigation/pages";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useDispatch } from "react-redux";
+import { logout } from "../../../store/slices/userSlices";
 
-interface Pages {
-  page: string;
-  link: string;
-}
-
-const settings: Pages[] = [
-  { page: "Profile", link: "/user/profile" },
-  { page: "Favorites", link: "/user/favorites" },
-  { page: "Watch List", link: "/user/watchlist" },
-];
-
-const Settings = () => {
-  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+const ProfileNav = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUser(user);
+        console.log(user);
       } else {
         console.log("user is logged out");
       }
@@ -49,7 +43,7 @@ const Settings = () => {
 
   const handleLogout = async () => {
     try {
-      await auth.signOut();
+      await auth.signOut().then(() => dispatch(logout()));
       navigate("/auth/login");
     } catch (err) {
       console.log(err);
@@ -58,18 +52,12 @@ const Settings = () => {
 
   return (
     <Box sx={{ flexGrow: 0 }}>
-      <Tooltip title="Open settings">
-        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Typography
-            sx={{ color: `${theme.palette.common.white}`, mr: "2rem" }}
-          >
-            {currentUser ? currentUser.email : "PROFILE"}
-          </Typography>
-        </IconButton>
-      </Tooltip>
+      <IconButton onClick={handleOpenUserMenu}>
+        <AccountCircleIcon sx={{ fontSize: "3rem" }} />
+      </IconButton>
+
       <Menu
         sx={{ mt: "45px" }}
-        id="menu-appbar"
         anchorEl={anchorElUser}
         anchorOrigin={{
           vertical: "top",
@@ -83,20 +71,24 @@ const Settings = () => {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        {settings.map((content, index) => (
+        <Typography component="p" variant="body1"></Typography>
+        {userDropDownPages.map((userDropDownPage, index) => (
           <MenuItem
-            key={`${index}-${content.page}`}
+            key={`${index}-${userDropDownPage.page}`}
             onClick={handleCloseUserMenu}
-            sx={{ color: `${theme.palette.common.black}` }}
+            sx={{
+              color: `${theme.palette.common.black}`,
+            }}
           >
             <Link
-              href={content.link}
+              href={userDropDownPage.link}
               sx={{
                 color: theme.palette.common.black,
-                textDecoration: "none",
               }}
             >
-              <Typography textAlign="center">{content.page}</Typography>
+              <Typography textAlign="center">
+                {userDropDownPage.page}
+              </Typography>
             </Link>
           </MenuItem>
         ))}
@@ -115,4 +107,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default ProfileNav;

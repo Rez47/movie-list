@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   IconButton,
@@ -7,17 +8,9 @@ import {
   Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-
-import React, { useState } from "react";
 import SearchBar from "../../SmallComponents/SearchBar/Searchbar";
-
 import theme from "../../../theme";
-
-interface Pages {
-  page: string;
-  link: string;
-}
-const pages: Pages[] = [{ page: "Home", link: "/" }];
+import { headerPages } from "./pages";
 
 const Drawer = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
@@ -36,16 +29,10 @@ const Drawer = () => {
 
   return (
     <Box>
-      <IconButton
-        size="large"
-        aria-label="account of current user"
-        aria-controls="menu-appbar"
-        aria-haspopup="true"
-        onClick={handleOpenNavMenu}
-        color="inherit"
-      >
+      <IconButton size="large" onClick={handleOpenNavMenu}>
         <MenuIcon />
       </IconButton>
+
       <Menu
         anchorEl={anchorElNav}
         anchorOrigin={{
@@ -61,18 +48,17 @@ const Drawer = () => {
         onClose={handleCloseNavMenu}
         sx={{
           display: { xs: "block", sm: "none" },
-          height: "auto",
           minHeight: "10rem",
         }}
       >
-        {pages.map((content, index) => (
-          <Link href={content.link} sx={{ textDecoration: "none" }}>
+        {headerPages.map((page, index) => (
+          <Link href={page.link}>
             <MenuItem
               key={index}
               onClick={() => handleMenuItemClick()}
               sx={{ color: `${theme.palette.common.black}` }}
             >
-              <Typography textAlign="center">{content.page}</Typography>
+              <Typography textAlign="center">{page.page}</Typography>
             </MenuItem>
           </Link>
         ))}

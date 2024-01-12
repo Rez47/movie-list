@@ -1,11 +1,11 @@
-import { Box, Link, Typography } from "@mui/material";
+import { Box, Link, Stack, Typography } from "@mui/material";
 import AdbIcon from "@mui/icons-material/Adb";
 
 const Logo = () => {
   return (
-    <>
+    <Box sx={{ ml: "2rem" }}>
       <Link href="/" sx={{ textDecoration: "none" }}>
-        <Box display="flex" justifyContent="center" alignItems="center">
+        <Stack direction="row" justifyContent="center" alignItems="center">
           <AdbIcon sx={{ mr: 1 }} />
           <Typography
             variant="h5"
@@ -23,9 +23,9 @@ const Logo = () => {
           >
             MEDIALIST
           </Typography>
-        </Box>
+        </Stack>
       </Link>
-    </>
+    </Box>
   );
 };
 

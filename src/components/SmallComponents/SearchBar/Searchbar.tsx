@@ -1,6 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   Box,
   ClickAwayListener,
@@ -8,6 +6,8 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import SearchIcon from "@mui/icons-material/Search";
 import { SearchList, SearchResults } from "../../../services/apiTypes";
 import { callApi } from "../../../services/callApi";
 import { getSearchMulti } from "../../../services/Search/apiGetSearchMulti";
@@ -28,13 +28,13 @@ const SearchBar: React.FC<SearchBarProps> = ({
   inputBackground,
   inputMargin,
 }) => {
-  const [isInputOpen, setIsInputOpen] = useState(false);
-  const [text, setText] = useState("");
+  const [isInputOpen, setIsInputOpen] = useState<boolean>(false);
+  const [text, setText] = useState<string>("");
   const [searchData, setSearchData] = useState<SearchResults[]>([]);
   const theme = useTheme();
 
   useEffect(() => {
-    const searchQuery = async () => {
+    (async () => {
       try {
         if (text) {
           const searchData = await callApi<SearchList>({
@@ -46,8 +46,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
       } catch (err) {
         console.log(err);
       }
-    };
-    searchQuery();
+    })();
   }, [text]);
 
   const handleIconClick = () => {
@@ -66,8 +65,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const handleMouseEnter = () => {
     setIsInputOpen(true);
   };
-
-  // console.log(text);
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
