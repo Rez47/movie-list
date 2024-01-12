@@ -1,5 +1,11 @@
+import Layout from "../../Layout";
+
 const Watchlist = () => {
-  return <div>Watchlist</div>;
+  return (
+    <Layout>
+      <div>Watchlist</div>
+    </Layout>
+  );
 };
 
 export default Watchlist;

@@ -1,5 +1,11 @@
+import Layout from "../../Layout";
+
 const Favorites = () => {
-  return <div>Favorites</div>;
+  return (
+    <Layout>
+      <div>Favorites</div>
+    </Layout>
+  );
 };
 
 export default Favorites;
