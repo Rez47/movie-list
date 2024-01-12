@@ -4,7 +4,7 @@ import { callApi } from "../services/callApi";
 import { Movie as MovieType } from "../services/apiTypes";
 import { getMovieDetails } from "../services/Movie/apiGetMovie";
 import { Box, Container, Stack, Typography, useTheme } from "@mui/material";
-import Layout from "../components/Layout/Layout";
+import Layout from "../Layout";
 
 const Movie = () => {
   const { id } = useParams();
@@ -38,6 +38,7 @@ const Movie = () => {
             flexWrap={{ xs: "wrap", sm: "nowrap" }}
             gap="2rem"
             marginTop="1rem"
+            p={4}
           >
             <Box
               sx={{

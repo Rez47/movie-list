@@ -6,6 +6,7 @@ import Series from "./pages/Series";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
+import Profile from "./pages/user/Profile";
 
 const App = () => {
   return (
@@ -19,6 +20,8 @@ const App = () => {
 
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/register" element={<Register />} />
+
+          <Route path="/user/profile" element={<Profile />} />
         </Routes>
       </ThemeProvider>
     </BrowserRouter>

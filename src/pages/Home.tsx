@@ -7,7 +7,7 @@ import {
 import { callApi } from "../services/callApi";
 import SmallMovieList from "../components/SmallComponents/List/SmallMovieList";
 import { getPopularSeriesList } from "../services/SeriesList/apiGetSeriesList";
-import Layout from "../components/Layout/Layout";
+import Layout from "../Layout";
 // import Alert, { AlertType } from "../components/MUIComponents/Alert";
 
 const Home = () => {

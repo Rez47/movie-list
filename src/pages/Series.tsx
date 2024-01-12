@@ -4,7 +4,7 @@ import { callApi } from "../services/callApi";
 import { Series as SeriesType } from "../services/apiTypes";
 import { getSeriesDetails } from "../services/Series/apiGetSeries";
 import { Box, Container, Stack, Typography, useTheme } from "@mui/material";
-import Layout from "../components/Layout/Layout";
+import Layout from "../Layout";
 
 const Series = () => {
   const { id } = useParams();
@@ -36,6 +36,7 @@ const Series = () => {
             flexWrap={{ xs: "wrap", sm: "nowrap" }}
             gap="2rem"
             marginTop="1rem"
+            p={4}
           >
             <Box
               sx={{

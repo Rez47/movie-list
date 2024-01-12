@@ -18,7 +18,7 @@ const Nav = () => {
 
   return (
     <AppBar position="static">
-      <Box sx={{ display: { xs: "none", sm: "flex", alignItems: "center" } }}>
+      <Box sx={{ display: { xs: "none", sm: "flex" }, alignItems: "center" }}>
         <Box sx={{ ml: "2rem" }}>
           <Logo />
         </Box>

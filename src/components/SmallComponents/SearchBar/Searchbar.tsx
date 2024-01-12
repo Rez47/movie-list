@@ -28,10 +28,10 @@ const SearchBar: React.FC<SearchBarProps> = ({
   inputBackground,
   inputMargin,
 }) => {
-  const theme = useTheme();
   const [isInputOpen, setIsInputOpen] = useState(false);
   const [text, setText] = useState("");
   const [searchData, setSearchData] = useState<SearchResults[]>([]);
+  const theme = useTheme();
 
   useEffect(() => {
     const searchQuery = async () => {
@@ -97,73 +97,90 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
         <Box
           sx={{
-            position: "absolute",
-            maxWidth: "24rem",
-            maxHeight: "27rem",
-            // padding: "1rem",
+            position: { sx: "initial", sm: "absolute" },
+            maxWidth: { sx: "none", sm: "24rem" },
+            maxHeight: { sx: "none", sm: "27rem" },
             top: "4rem",
             left: "0rem",
             zIndex: "999",
-            overflowY: "scroll",
+            overflowY: { sx: "none", sm: "scroll" },
             backgroundColor: `${theme.palette.primary.main}`,
             scrollbarWidth: "1rem",
           }}
         >
-          {text && (
+          {text && searchData.length === 0 ? (
+            <Typography
+              component="p"
+              variant="body2"
+              sx={{
+                textAlign: "center",
+                py: "4rem",
+                px: "5rem",
+                mt: { xs: "1rem", sm: 0 },
+              }}
+            >
+              No items found
+            </Typography>
+          ) : (
             <Box>
-              {searchData.map((item) => (
-                <Link
-                  to={
-                    item.media_type === "tv"
-                      ? `/series/${item.id}`
-                      : `/movie/${item.id}`
-                  }
-                  style={{ textDecoration: "none", color: "inherit" }}
-                  onClick={() => setText("")}
-                >
-                  <Box
-                    margin={2}
-                    display={"flex"}
-                    gap={2}
-                    sx={{
-                      ":hover": {
-                        backgroundColor: theme.palette.secondary.main,
-                        cursor: "pointer",
-                      },
-                      padding: "1rem",
-                      borderRadius: "1rem",
-                    }}
+              {searchData.map((item) => {
+                if (!item.poster_path) {
+                  return "";
+                }
+                return (
+                  <Link
+                    to={
+                      item.media_type === "tv"
+                        ? `/series/${item.id}`
+                        : `/movie/${item.id}`
+                    }
+                    style={{ textDecoration: "none", color: "inherit" }}
+                    onClick={() => setText("")}
                   >
                     <Box
-                      key={item.id}
-                      minWidth={120}
-                      height={160}
+                      margin={2}
+                      display={"flex"}
+                      gap={2}
                       sx={{
-                        backgroundImage: `url(https://image.tmdb.org/t/p/original${item.poster_path})`,
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                        backgroundSize: "cover",
-                        borderRadius: "5px",
-                        marginBottom: 1,
+                        ":hover": {
+                          backgroundColor: theme.palette.secondary.main,
+                          cursor: "pointer",
+                        },
+                        padding: "1rem",
+                        borderRadius: "1rem",
                       }}
-                    ></Box>
-                    <Box>
-                      <Typography component="p" variant="body1">
-                        {item.title}
-                      </Typography>
-                      <Typography component="p" variant="body2">
-                        IMDb Score: {item?.vote_average?.toFixed(1)}
-                      </Typography>
-                      <Typography component="p" variant="body1">
-                        {item.release_date || item?.first_air_date}
-                      </Typography>
-                      <Typography>
-                        {item.media_type !== "tv" ? "Movie" : "Series"}
-                      </Typography>
+                    >
+                      <Box
+                        key={item.id}
+                        minWidth={120}
+                        height={160}
+                        sx={{
+                          backgroundImage: `url(https://image.tmdb.org/t/p/original${item.poster_path})`,
+                          backgroundRepeat: "no-repeat",
+                          backgroundPosition: "center",
+                          backgroundSize: "cover",
+                          borderRadius: "5px",
+                          marginBottom: 1,
+                        }}
+                      ></Box>
+                      <Box>
+                        <Typography component="p" variant="body1">
+                          {item.title}
+                        </Typography>
+                        <Typography component="p" variant="body2">
+                          IMDb Score: {item.vote_average}
+                        </Typography>
+                        <Typography component="p" variant="body1">
+                          {item.release_date || item.first_air_date}
+                        </Typography>
+                        <Typography>
+                          {item.media_type !== "tv" ? "Movie" : "Series"}
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </Box>
           )}
         </Box>
