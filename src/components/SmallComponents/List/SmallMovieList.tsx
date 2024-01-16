@@ -100,7 +100,7 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
         sx={{
           width: "100%",
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(160px, max-content))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(150px, max-content))",
           gap: 2,
           mt: 2,
           justifyContent: "center",
@@ -129,7 +129,7 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
           sx={{
             width: "100%",
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(160px, max-content))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(150px, max-content))",
             gap: 2,
             mt: 2,
             justifyContent: "center",
