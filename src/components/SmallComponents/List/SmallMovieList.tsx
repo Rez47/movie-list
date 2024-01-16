@@ -48,16 +48,17 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
   ) => {
     console.log(movieType);
     if (moviesPage === value) return;
+
     setMoviesPage(value);
-    if (moviesPage) {
+    if (value) {
       try {
         const getMoviesData = await callApi<MovieList>({
           query:
             movieType === "popular"
-              ? getPopularMoviesList(moviesPage.toString())
+              ? getPopularMoviesList(value.toString())
               : movieType === "nowPlaying"
-              ? getNowPlayingMoviesList(moviesPage.toString())
-              : getPopularMoviesList(moviesPage.toString()),
+              ? getNowPlayingMoviesList(value.toString())
+              : getPopularMoviesList(value.toString()),
         });
 
         if (moviesData && setMoviesData) {
@@ -77,10 +78,10 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
   ) => {
     if (seriesPage === value) return;
     setSeriesPage(value);
-    if (seriesPage && seriesData && setSeriesData) {
+    if (value && seriesData && setSeriesData) {
       try {
         const popularSeriesData = await callApi<SeriesList>({
-          query: getPopularSeriesList(seriesPage.toString()),
+          query: getPopularSeriesList(value.toString()),
         });
 
         setSeriesData(popularSeriesData.results);

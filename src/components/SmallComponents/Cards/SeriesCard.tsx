@@ -15,15 +15,11 @@ const SeriesCard: React.FC<SeriesCardProps> = ({ seriesData }) => {
     >
       <Card
         sx={{
-          width: 170,
-          height: 280,
           bgcolor: "transparent",
           boxShadow: "none",
         }}
       >
         <Box
-          width={170}
-          height={220}
           sx={{
             backgroundImage: `url(https://image.tmdb.org/t/p/original${seriesData.poster_path})`,
             backgroundRepeat: "no-repeat",
@@ -31,6 +27,7 @@ const SeriesCard: React.FC<SeriesCardProps> = ({ seriesData }) => {
             backgroundSize: "cover",
             borderRadius: "5px",
             marginBottom: 1,
+            aspectRatio: 4 / 6,
           }}
         ></Box>
 
@@ -53,6 +50,8 @@ const SeriesCard: React.FC<SeriesCardProps> = ({ seriesData }) => {
           m={0}
           p={0}
           mt={1}
+          gap={1}
+          flexWrap="wrap"
         >
           <Typography component="p" variant="body1">
             {seriesData?.first_air_date?.slice(0, 4)}

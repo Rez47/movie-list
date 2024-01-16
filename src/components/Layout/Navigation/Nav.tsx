@@ -1,12 +1,10 @@
-import { AppBar, Link, Menu, Stack, Button } from "@mui/material/";
+import { AppBar, Link, Stack, Button } from "@mui/material/";
 import SearchBar from "../../SmallComponents/SearchBar/Searchbar";
 import { useTheme } from "@mui/material";
 import Drawer from "./Drawer";
 import Logo from "./Logo";
 import ProfileDropDown from "../../PageComponents/Profile/ProfileDropDown";
 import { headerPages } from "./pages";
-import { useState } from "react";
-
 const Nav = () => {
   const theme = useTheme();
 

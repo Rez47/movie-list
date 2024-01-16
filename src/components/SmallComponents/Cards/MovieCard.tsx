@@ -11,19 +11,19 @@ const MovieCard: React.FC<MovieCardProps> = ({ movieData }) => {
   return (
     <Link
       to={`/movie/${movieData.id}`}
-      style={{ textDecoration: "none", color: "inherit" }}
+      style={{
+        textDecoration: "none",
+        color: "inherit",
+        minWidth: "none",
+      }}
     >
       <Card
         sx={{
-          width: 170,
-          height: 280,
           bgcolor: "transparent",
           boxShadow: "none",
         }}
       >
         <Box
-          width={170}
-          height={220}
           sx={{
             backgroundImage: `url(https://image.tmdb.org/t/p/original${movieData.poster_path})`,
             backgroundRepeat: "no-repeat",
@@ -31,6 +31,8 @@ const MovieCard: React.FC<MovieCardProps> = ({ movieData }) => {
             backgroundSize: "cover",
             borderRadius: "5px",
             marginBottom: 1,
+            aspectRatio: 4 / 6,
+            p: 4,
           }}
         ></Box>
 
@@ -53,6 +55,8 @@ const MovieCard: React.FC<MovieCardProps> = ({ movieData }) => {
           m={0}
           p={0}
           mt={1}
+          gap={1}
+          flexWrap="wrap"
         >
           <Typography component="p" variant="body1">
             {movieData?.release_date?.slice(0, 4)}
