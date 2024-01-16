@@ -168,6 +168,13 @@ const theme = responsiveFontSizes(
           },
         },
       },
+      MuiMenu: {
+        styleOverrides: {
+          paper: {
+            backgroundColor: "rgba(230, 230, 230, 0.95)",
+          },
+        },
+      },
     },
   })
 );

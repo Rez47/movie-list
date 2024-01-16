@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import theme from "../../../theme";
-import { useNavigate } from "react-router-dom";
+
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../config/firebase";
@@ -15,10 +15,13 @@ import { userDropDownPages } from "../../Layout/Navigation/pages";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../store/slices/userSlices";
+import LogoutIcon from "@mui/icons-material/Logout";
+import PersonIcon from "@mui/icons-material/Person";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const ProfileNav = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const [currentUser, setCurrentUser] = useState<any>(null);
 
@@ -44,7 +47,6 @@ const ProfileNav = () => {
   const handleLogout = async () => {
     try {
       await auth.signOut().then(() => dispatch(logout()));
-      navigate("/auth/login");
     } catch (err) {
       console.log(err);
     }
@@ -53,7 +55,7 @@ const ProfileNav = () => {
   return (
     <Box sx={{ flexGrow: 0 }}>
       <IconButton onClick={handleOpenUserMenu}>
-        <AccountCircleIcon sx={{ fontSize: "3rem" }} />
+        <AccountCircleIcon sx={{ fontSize: "2.5rem" }} />
       </IconButton>
 
       <Menu
@@ -73,35 +75,54 @@ const ProfileNav = () => {
       >
         <Typography component="p" variant="body1"></Typography>
         {userDropDownPages.map((userDropDownPage, index) => (
-          <MenuItem
-            key={`${index}-${userDropDownPage.page}`}
-            onClick={handleCloseUserMenu}
+          <Link
+            href={userDropDownPage.link}
             sx={{
-              color: `${theme.palette.common.black}`,
+              color: theme.palette.common.black,
             }}
           >
-            <Link
-              href={userDropDownPage.link}
+            <MenuItem
+              key={`${index}-${userDropDownPage.page}`}
+              onClick={handleCloseUserMenu}
+              sx={{
+                color: `${theme.palette.common.black}`,
+              }}
+            >
+              <Box
+                sx={{
+                  mr: " .5rem",
+                  pt: "0.1rem",
+                  color: theme.palette.text.secondary,
+                }}
+              >
+                {userDropDownPage.page === "Profile" ? (
+                  <PersonIcon />
+                ) : userDropDownPage.page === "Favorites" ? (
+                  <FavoriteIcon />
+                ) : (
+                  <VisibilityIcon />
+                )}
+              </Box>
+              <Typography textAlign="center">
+                {userDropDownPage.page}
+              </Typography>
+            </MenuItem>
+          </Link>
+        ))}
+        <Link onClick={handleLogout} href="/auth/login">
+          <MenuItem>
+            <LogoutIcon
+              sx={{ color: theme.palette.text.secondary, mr: "0.5rem" }}
+            />
+            <Typography
               sx={{
                 color: theme.palette.common.black,
               }}
             >
-              <Typography textAlign="center">
-                {userDropDownPage.page}
-              </Typography>
-            </Link>
+              {currentUser ? "Logout" : "Login"}
+            </Typography>
           </MenuItem>
-        ))}
-        <IconButton
-          onClick={handleLogout}
-          sx={{
-            color: theme.palette.common.black,
-            fontSize: "1rem",
-            pl: "1rem",
-          }}
-        >
-          {currentUser ? "Logout" : "Login"}
-        </IconButton>
+        </Link>
       </Menu>
     </Box>
   );

@@ -1,10 +1,11 @@
-import { AppBar, Link, Stack } from "@mui/material/";
+import { AppBar, Link, Menu, Stack, Button } from "@mui/material/";
 import SearchBar from "../../SmallComponents/SearchBar/Searchbar";
 import { useTheme } from "@mui/material";
 import Drawer from "./Drawer";
 import Logo from "./Logo";
 import ProfileDropDown from "../../PageComponents/Profile/ProfileDropDown";
 import { headerPages } from "./pages";
+import { useState } from "react";
 
 const Nav = () => {
   const theme = useTheme();
@@ -26,7 +27,9 @@ const Nav = () => {
         >
           {headerPages.map((page, index) => (
             <Link key={index} href={page.link}>
-              {page.page}
+              <Button sx={{ my: 2, color: "white", display: "block" }}>
+                {page.page}
+              </Button>
             </Link>
           ))}
         </Stack>
