@@ -32,7 +32,6 @@ const MovieCard: React.FC<MovieCardProps> = ({ movieData }) => {
             borderRadius: "5px",
             marginBottom: 1,
             aspectRatio: 4 / 6,
-            p: 4,
           }}
         ></Box>
 
