@@ -5,8 +5,27 @@ import Drawer from "./Drawer";
 import Logo from "./Logo";
 import ProfileDropDown from "../../PageComponents/Profile/ProfileDropDown";
 import { headerPages } from "./pages";
+import { useEffect } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { login } from "../../../store/slices/userSlices";
+
 const Nav = () => {
+  const dispatch = useDispatch();
   const theme = useTheme();
+  const auth = getAuth();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const currentUser = {
+          uid: user.uid,
+          email: user.email,
+        };
+        dispatch(login(currentUser));
+      }
+    });
+  }, [auth, dispatch]);
 
   return (
     <AppBar position="static">

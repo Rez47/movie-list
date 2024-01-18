@@ -26,8 +26,6 @@ const ProfileNav = () => {
   const user = useSelector((state: RootState) => state.user.currentUser);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
-  console.log(user);
-
   // useEffect(() => {
   //   onAuthStateChanged(auth, (user) => {
   //     if (user) {

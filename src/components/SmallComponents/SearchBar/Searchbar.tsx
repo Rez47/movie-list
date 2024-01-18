@@ -40,7 +40,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
           const searchData = await callApi<SearchList>({
             query: getSearchMulti(text),
           });
-          console.log(searchData);
           setSearchData(searchData.results);
         }
       } catch (err) {

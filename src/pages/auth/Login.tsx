@@ -1,175 +1,151 @@
 import { useState } from "react";
 import {
-  Container,
-  Stack,
-  Typography,
-  TextField,
   CircularProgress,
-  Button,
-  useTheme,
-  Link,
-  Box,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
 } from "@mui/material";
-import Alert, { AlertType } from "../../components/MUIComponents/Alert";
+import { Form, Formik } from "formik";
+import { object, string } from "yup";
+import Button from "../../components/MUIComponents/Button";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
 import { auth } from "../../config/firebase";
+import Alert, { AlertType } from "../../components/MUIComponents/Alert";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/slices/userSlices";
+
+const fieldValidation = object({
+  email: string().email("Email is not valid").required("Email is requiered"),
+  password: string()
+    .min(6, "Password should be atleast 6")
+    .required("Password is requiered"),
+});
+
+type LoginFormValues = {
+  email: string;
+  password: string;
+};
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const theme = useTheme();
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alert, setAlert] = useState<AlertType>({
     message: "",
     severity: "error",
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const initialValues: LoginFormValues = {
+    email: "",
+    password: "",
+  };
 
-  const handleLogin = async () => {
-    setLoading(true);
-    setShowAlert(false);
-    setAlert({ message: "", severity: "error" });
-
-    if (email === "") {
-      setShowAlert(true);
-      setAlert({ message: "Email Address is required", severity: "error" });
-      setLoading(false);
-      return;
-    }
-
-    if (password === "") {
-      setShowAlert(true);
-      setAlert({ message: "Password is required", severity: "error" });
-      setLoading(false);
-      return;
-    }
-
+  const handleFormSubmit = async (values: LoginFormValues) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password).then((user) => {
-        dispatch(login(user));
+      setLoading(true);
+
+      await signInWithEmailAndPassword(
+        auth,
+        values.email,
+        values.password
+      ).then((user) => {
+        if (!user) throw new Error("Invalid user");
+
+        const currentUser = {
+          uid: user.user.uid,
+          email: user.user.email,
+        };
+
+        dispatch(login(currentUser));
         navigate("/");
-        setLoading(false);
       });
-    } catch (error: any) {
+    } catch (error) {
+      console.log(error);
       setLoading(false);
       setShowAlert(true);
-      setAlert({ message: error.message.substring(10), severity: "error" });
-      console.log(error);
-      throw new Error("Could not create user " + error);
+      setAlert({
+        message: (error as Error).message,
+        severity: "error",
+      });
     }
   };
 
   return (
-    <Container
-      sx={{
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
+    <Stack
+      width="100vw"
+      height="100vh"
+      justifyContent="center"
+      alignItems="center"
     >
-      <Stack
-        width="100%"
-        maxWidth="40rem"
-        justifyContent="center"
-        alignItems="center"
-        direction="column"
-        gap={5}
-        sx={{
-          bgcolor: theme.palette.secondary.main,
-          borderRadius: "10px",
-          p: 5,
-        }}
-      >
-        <Typography component="h2" variant="h2">
-          Login
-        </Typography>
+      <Paper sx={{ width: "100%", maxWidth: "600px", padding: 4 }}>
+        <Stack justifyContent="center" alignItems="center" gap={2} mb={2}>
+          <Typography component="h1" variant="h1">
+            Movie List
+          </Typography>
+
+          <Typography component="h2" variant="h3">
+            Login
+          </Typography>
+        </Stack>
 
         {!loading ? (
-          <>
-            <TextField
-              label="Email Address"
-              placeholder="Email Address"
-              variant="outlined"
-              type="email"
-              onChange={(e) => setEmail(e.target.value)}
-              error={alert.message === "Email Address is required"}
-              helperText={
-                alert.message === "Email Address is required"
-                  ? "Email Address is required"
-                  : ""
-              }
-              required
-            />
+          <Formik
+            initialValues={initialValues}
+            onSubmit={handleFormSubmit}
+            validationSchema={fieldValidation}
+            enableReinitialize
+          >
+            {({ handleSubmit, handleChange, touched, errors, values }) => (
+              <Form onSubmit={handleSubmit}>
+                <Stack spacing={2}>
+                  <TextField
+                    name="email"
+                    label="Email"
+                    variant="outlined"
+                    type="email"
+                    value={values.email}
+                    onChange={handleChange}
+                    error={touched["email"] && !!errors["email"]}
+                    helperText={touched["email"] && errors["email"]}
+                  />
 
-            <TextField
-              label="Password"
-              placeholder="Password"
-              variant="outlined"
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-              error={alert.message === "Password is required"}
-              helperText={
-                alert.message === "Password is required"
-                  ? "Password is required"
-                  : ""
-              }
-              required
-            />
-          </>
+                  <TextField
+                    name="password"
+                    label="Password"
+                    variant="outlined"
+                    type="password"
+                    value={values.password}
+                    onChange={handleChange}
+                    error={touched["password"] && !!errors["password"]}
+                    helperText={touched["password"] && errors["password"]}
+                  />
+
+                  <Alert
+                    severity={alert.severity}
+                    text={alert.message}
+                    showError={showAlert}
+                    setShowError={setShowAlert}
+                  />
+
+                  <Button label="Login" isSubmit />
+                </Stack>
+              </Form>
+            )}
+          </Formik>
         ) : (
-          <CircularProgress />
+          <Stack
+            direction="row"
+            justifyContent="center"
+            alignItems="center"
+            my={6}
+          >
+            <CircularProgress />
+          </Stack>
         )}
-
-        <Alert
-          severity={alert.severity}
-          text={alert.message}
-          showError={showAlert}
-          setShowError={setShowAlert}
-          isStatic
-        />
-
-        <Button
-          variant="contained"
-          sx={{ bgcolor: theme.palette.info.main }}
-          onClick={handleLogin}
-        >
-          Login
-        </Button>
-
-        <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          gap={1}
-        >
-          <Box>
-            <Typography component="span" variant="body2">
-              Don't have account?{" "}
-            </Typography>
-            <Link href="/auth/register">Register</Link>
-          </Box>
-
-          <Box>
-            <Link href="/">
-              <Typography
-                component="p"
-                variant="body2"
-                sx={{ fontSize: "0.8rem" }}
-              >
-                Just want to checkout? Click to go to homepage.
-              </Typography>
-            </Link>
-          </Box>
-        </Box>
-      </Stack>
-    </Container>
+      </Paper>
+    </Stack>
   );
 };
 

@@ -46,7 +46,6 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
     event: React.ChangeEvent<unknown>,
     value: number
   ) => {
-    console.log(movieType);
     if (moviesPage === value) return;
 
     setMoviesPage(value);

@@ -7,21 +7,25 @@ import { Box, Container, Stack, Typography, useTheme } from "@mui/material";
 import Layout from "../Layout";
 import Favorite from "@mui/icons-material/Favorite";
 import AddToQueueIcon from "@mui/icons-material/AddToQueue";
-import { useDispatch } from "react-redux";
-import { addToFavorites, addToWatchlist } from "../store/slices/userSlices";
+import { handleMediaFavorite } from "../helpers/functions";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 const Movie = () => {
   const { id } = useParams();
   const [movieData, setMoviesData] = useState<MovieType>();
-  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state: RootState) => state.user);
 
-  const handleAddToFavorites = () => {
-    dispatch(addToFavorites(movieData));
+  const handleAddToFavorites = async () => {
+    if (!movieData) return;
+    await handleMediaFavorite(
+      movieData.id.toString(),
+      currentUser.email,
+      "favourite"
+    );
   };
 
-  const handleAddToWatchlist = () => {
-    dispatch(addToWatchlist(movieData));
-  };
+  const handleAddToWatchlist = () => {};
 
   useEffect(() => {
     (async () => {
@@ -30,7 +34,6 @@ const Movie = () => {
           const movieData = await callApi<MovieType>({
             query: getMovieDetails(id),
           });
-          console.log(movieData);
           setMoviesData(movieData);
         }
       } catch (err) {

@@ -175,6 +175,13 @@ const theme = responsiveFontSizes(
           },
         },
       },
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            backgroundColor: "#272F37",
+          },
+        },
+      },
     },
   })
 );
