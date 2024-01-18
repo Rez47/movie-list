@@ -13,28 +13,31 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../../config/firebase";
 import { userDropDownPages } from "../../Layout/Navigation/pages";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../../store/slices/userSlices";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { RootState } from "../../../store/store";
 
 const ProfileNav = () => {
   const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user.currentUser);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-  const [currentUser, setCurrentUser] = useState<any>(null);
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCurrentUser(user);
-        console.log(user);
-      } else {
-        console.log("user is logged out");
-      }
-    });
-  }, []);
+  console.log(user);
+
+  // useEffect(() => {
+  //   onAuthStateChanged(auth, (user) => {
+  //     if (user) {
+  //       setCurrentUser(user);
+  //       console.log(user);
+  //     } else {
+  //       console.log("user is logged out");
+  //     }
+  //   });
+  // }, []);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -55,7 +58,7 @@ const ProfileNav = () => {
   return (
     <Box sx={{ flexGrow: 0 }}>
       <IconButton onClick={handleOpenUserMenu}>
-        <AccountCircleIcon sx={{ fontSize: "2.5rem" }} />
+        <AccountCircleIcon sx={{ fontSize: "2.5rem", mr: "1rem" }} />
       </IconButton>
 
       <Menu
@@ -73,7 +76,18 @@ const ProfileNav = () => {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        <Typography component="p" variant="body1"></Typography>
+        <Typography
+          component="h5"
+          variant="h5"
+          sx={{
+            px: "1.2rem",
+            color: theme.palette.common.black,
+            fontWeight: "500",
+            fontSize: "1.2rem",
+          }}
+        >
+          {user ? `Hello, ${user.email}` : ""}
+        </Typography>
         {userDropDownPages.map((userDropDownPage, index) => (
           <Link
             href={userDropDownPage.link}
@@ -119,7 +133,7 @@ const ProfileNav = () => {
                 color: theme.palette.common.black,
               }}
             >
-              {currentUser ? "Logout" : "Login"}
+              {user ? "Logout" : "Login"}
             </Typography>
           </MenuItem>
         </Link>

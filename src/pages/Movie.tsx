@@ -5,10 +5,23 @@ import { Movie as MovieType } from "../services/apiTypes";
 import { getMovieDetails } from "../services/Movie/apiGetMovie";
 import { Box, Container, Stack, Typography, useTheme } from "@mui/material";
 import Layout from "../Layout";
+import Favorite from "@mui/icons-material/Favorite";
+import AddToQueueIcon from "@mui/icons-material/AddToQueue";
+import { useDispatch } from "react-redux";
+import { addToFavorites, addToWatchlist } from "../store/slices/userSlices";
 
 const Movie = () => {
   const { id } = useParams();
   const [movieData, setMoviesData] = useState<MovieType>();
+  const dispatch = useDispatch();
+
+  const handleAddToFavorites = () => {
+    dispatch(addToFavorites(movieData));
+  };
+
+  const handleAddToWatchlist = () => {
+    dispatch(addToWatchlist(movieData));
+  };
 
   useEffect(() => {
     (async () => {
@@ -35,31 +48,69 @@ const Movie = () => {
             direction="row"
             justifyContent="center"
             alignContent="center"
-            flexWrap={{ xs: "wrap", sm: "nowrap" }}
+            flexWrap={{ xs: "wrap", md: "nowrap" }}
             gap="2rem"
             marginTop="1rem"
             p={4}
           >
-            <Box
-              sx={{
-                padding: "1rem",
-                border: `0.2rem solid ${theme.palette.common.white}`,
-                borderRadius: "0.5rem",
-              }}
-            >
+            <Stack direction="column">
               <Box
-                width={250}
-                height={350}
                 sx={{
-                  backgroundImage: `url(https://image.tmdb.org/t/p/original${movieData?.poster_path})`,
-                  backgroundSize: "cover",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  objectFit: "contain",
+                  padding: "1rem",
+                  border: `0.2rem solid ${theme.palette.common.white}`,
                   borderRadius: "0.5rem",
                 }}
-              ></Box>
-            </Box>
+              >
+                <Box
+                  width={220}
+                  height={320}
+                  sx={{
+                    backgroundImage: `url(https://image.tmdb.org/t/p/original${movieData?.poster_path})`,
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    objectFit: "contain",
+                    borderRadius: "0.5rem",
+                  }}
+                ></Box>
+              </Box>
+
+              <Stack
+                direction="column"
+                px={2}
+                py={4}
+                display={{ xs: "none", md: "flex" }}
+                gap={2}
+                alignItems="center"
+              >
+                <Stack
+                  direction="row"
+                  sx={{ cursor: "pointer" }}
+                  gap={1}
+                  onClick={handleAddToFavorites}
+                >
+                  <Favorite />
+                  <Typography
+                    component="p"
+                    variant="body1"
+                    sx={{ maxWidth: "max-content" }}
+                  >
+                    Add to favorites
+                  </Typography>
+                </Stack>
+                <Stack
+                  direction="row"
+                  sx={{ cursor: "pointer" }}
+                  gap={1}
+                  onClick={handleAddToWatchlist}
+                >
+                  <AddToQueueIcon />
+                  <Typography component="p" variant="body1">
+                    Add to watchlist
+                  </Typography>
+                </Stack>
+              </Stack>
+            </Stack>
 
             <Stack
               gap="1rem"
@@ -70,7 +121,7 @@ const Movie = () => {
               <Typography
                 component="h1"
                 variant="h1"
-                textAlign={{ xs: "center", sm: "start" }}
+                textAlign={{ xs: "center", md: "start" }}
               >
                 {movieData?.original_title}
               </Typography>
@@ -116,17 +167,53 @@ const Movie = () => {
                   justifyContent="flex-start"
                   alignItems="center"
                   gap={1}
+                  flexWrap="wrap"
                 >
                   {movieData?.production_countries.map(
                     (country, index, array) => (
-                      <Typography key={`${index}-${country.name}`}>
+                      <Typography
+                        key={`${index}-${country.name}`}
+                        component="p"
+                        variant="body2"
+                      >
                         {country.name}
                         {index < array.length - 1 && ","}
                       </Typography>
                     )
                   )}
+                  ;
                 </Stack>
               </Typography>
+              <Stack
+                direction="row"
+                px={2}
+                py={4}
+                display={{ xs: "flex", md: "none" }}
+                gap={6}
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Stack
+                  direction="row"
+                  sx={{ cursor: "pointer" }}
+                  gap={1}
+                  alignItems="center"
+                  onClick={handleAddToFavorites}
+                >
+                  <Favorite />
+                  <Typography>Add to favorites</Typography>
+                </Stack>
+                <Stack
+                  direction="row"
+                  sx={{ cursor: "pointer" }}
+                  gap={1}
+                  alignItems="center"
+                  onClick={handleAddToWatchlist}
+                >
+                  <AddToQueueIcon />
+                  <Typography>Add to watchlist</Typography>
+                </Stack>
+              </Stack>
             </Stack>
           </Stack>
         </Container>
