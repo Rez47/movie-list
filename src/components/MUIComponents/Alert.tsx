@@ -25,7 +25,7 @@ const Alert: React.FC<AlertProps> = ({
     if (!isStatic) {
       const timeout = setTimeout(() => {
         setShowError(false);
-      }, 3000);
+      }, 5000);
 
       return () => clearTimeout(timeout);
     }

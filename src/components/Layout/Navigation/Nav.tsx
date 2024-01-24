@@ -8,7 +8,8 @@ import { headerPages } from "./pages";
 import { useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from "react-redux";
-import { login } from "../../../store/slices/userSlices";
+import { login, logout } from "../../../store/slices/userSlices";
+import { current } from "@reduxjs/toolkit";
 
 const Nav = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const Nav = () => {
           email: user.email,
         };
         dispatch(login(currentUser));
+        console.log(currentUser);
       }
     });
   }, [auth, dispatch]);

@@ -8,8 +8,7 @@ import {
 } from "@mui/material";
 import theme from "../../../theme";
 
-import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
+import { useState } from "react";
 import { auth } from "../../../config/firebase";
 import { userDropDownPages } from "../../Layout/Navigation/pages";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -53,6 +52,8 @@ const ProfileNav = () => {
     }
   };
 
+  console.log(user);
+
   return (
     <Box sx={{ flexGrow: 0 }}>
       <IconButton onClick={handleOpenUserMenu}>
@@ -84,7 +85,7 @@ const ProfileNav = () => {
             fontSize: "1.2rem",
           }}
         >
-          {user ? `Hello, ${user.email}` : ""}
+          {user.email !== "" ? `Hello, ${user.email}` : ""}
         </Typography>
         {userDropDownPages.map((userDropDownPage, index) => (
           <Link
@@ -131,7 +132,7 @@ const ProfileNav = () => {
                 color: theme.palette.common.black,
               }}
             >
-              {user ? "Logout" : "Login"}
+              {user.email !== "" ? "Logout" : "Login"}
             </Typography>
           </MenuItem>
         </Link>

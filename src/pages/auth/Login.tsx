@@ -1,6 +1,8 @@
 import { useState } from "react";
 import {
+  Box,
   CircularProgress,
+  Link,
   Paper,
   Stack,
   TextField,
@@ -15,12 +17,13 @@ import Alert, { AlertType } from "../../components/MUIComponents/Alert";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../../store/slices/userSlices";
+import theme from "../../theme";
 
 const fieldValidation = object({
-  email: string().email("Email is not valid").required("Email is requiered"),
+  email: string().required("Email is required").email("Email is not valid"),
   password: string()
-    .min(6, "Password should be atleast 6")
-    .required("Password is requiered"),
+    .required("Password is required")
+    .min(6, "Password should be atleast 6"),
 });
 
 type LoginFormValues = {
@@ -97,9 +100,16 @@ const Login = () => {
             validationSchema={fieldValidation}
             enableReinitialize
           >
-            {({ handleSubmit, handleChange, touched, errors, values }) => (
+            {({
+              handleSubmit,
+              handleChange,
+              handleBlur,
+              touched,
+              errors,
+              values,
+            }) => (
               <Form onSubmit={handleSubmit}>
-                <Stack spacing={2}>
+                <Stack spacing={2} alignItems="center">
                   <TextField
                     name="email"
                     label="Email"
@@ -107,8 +117,14 @@ const Login = () => {
                     type="email"
                     value={values.email}
                     onChange={handleChange}
-                    error={touched["email"] && !!errors["email"]}
-                    helperText={touched["email"] && errors["email"]}
+                    onBlur={handleBlur}
+                    error={
+                      (touched["email"] || !!errors["email"]) &&
+                      !!errors["email"]
+                    }
+                    helperText={
+                      (touched["email"] || !!errors["email"]) && errors["email"]
+                    }
                   />
 
                   <TextField
@@ -118,8 +134,15 @@ const Login = () => {
                     type="password"
                     value={values.password}
                     onChange={handleChange}
-                    error={touched["password"] && !!errors["password"]}
-                    helperText={touched["password"] && errors["password"]}
+                    onBlur={handleBlur}
+                    error={
+                      (touched["password"] || !!errors["password"]) &&
+                      !!errors["password"]
+                    }
+                    helperText={
+                      (touched["password"] || !!errors["password"]) &&
+                      errors["password"]
+                    }
                   />
 
                   <Alert
@@ -128,8 +151,44 @@ const Login = () => {
                     showError={showAlert}
                     setShowError={setShowAlert}
                   />
+                  <Box>
+                    <Button
+                      label="Login"
+                      isSubmit
+                      sx={{
+                        textAlign: "center",
+                        px: "2rem",
+                        py: "0.5rem",
+                        bgcolor: theme.palette.info.main,
+                        margin: "1rem",
+                      }}
+                    />
+                  </Box>
+                  <Stack
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    gap={1}
+                  >
+                    <Box>
+                      <Typography component="span" variant="body2">
+                        Already have an account?{" "}
+                      </Typography>
+                      <Link href="/auth/register">Register</Link>
+                    </Box>
 
-                  <Button label="Login" isSubmit />
+                    <Box>
+                      <Link href="/">
+                        <Typography
+                          component="p"
+                          variant="body2"
+                          sx={{ fontSize: "0.8rem" }}
+                        >
+                          Just want to checkout? Click to go to homepage.
+                        </Typography>
+                      </Link>
+                    </Box>
+                  </Stack>
                 </Stack>
               </Form>
             )}
