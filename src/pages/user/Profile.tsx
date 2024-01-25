@@ -1,12 +1,29 @@
+import { useEffect, useState } from "react";
 import { Avatar, Box, Container, Link, Typography } from "@mui/material";
 import Layout from "../../Layout";
 import theme from "../../theme";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { Stack } from "@mui/system";
+import { getDocument } from "../../helpers/firestore";
 
 const Profile = () => {
   const user = useSelector((state: RootState) => state.user.currentUser);
+  const [favouritesData, setFavouritesData] = useState<string[]>();
+
+  useEffect(() => {
+    (async () => {
+      const favouriteMediaData: string[] = await getDocument(
+        "favourite",
+        user.email
+      );
+
+      if (favouriteMediaData) setFavouritesData(favouriteMediaData);
+    })();
+  }, [user]);
+
+  // TODO: fetch watchListData and display
+  // TODO: ?? add skeleton or better UI for loading
 
   return (
     <Layout>
@@ -52,7 +69,10 @@ const Profile = () => {
             </Typography>
 
             <Box>
-              <Typography>Number of liked media: N/a</Typography>
+              <Typography>
+                Number of liked media:{" "}
+                {favouritesData ? favouritesData.length : "Loading..."}
+              </Typography>
               <Typography>Number of media in watch list: N/a</Typography>
             </Box>
 

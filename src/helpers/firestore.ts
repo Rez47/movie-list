@@ -1,6 +1,6 @@
 import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
-import { Collection } from "./types";
+import { Collection, MediaData } from "./types";
 
 export const getDocument = async (
   collection: Collection,
@@ -23,7 +23,7 @@ export const getDocument = async (
 export const createDocument = async (
   collection: Collection,
   userEmail: string,
-  body: string
+  body: MediaData
 ) => {
   try {
     await setDoc(doc(db, collection, userEmail), {

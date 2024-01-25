@@ -1,24 +1,31 @@
 import { createDocument, getDocument, updateDocument } from "./firestore";
-import { Collection } from "./types";
+import { Collection, MediaData } from "./types";
 
 export const handleMediaFavorite = async (
-  movieId: string,
+  mediaData: MediaData,
   userEmail: string,
-  mediaType: Collection
+  mediaCollection: Collection
 ) => {
-  const document = await getDocument(mediaType, userEmail);
+  const document = await getDocument(mediaCollection, userEmail);
 
   if (!document) {
-    await createDocument(mediaType, userEmail, movieId);
+    await createDocument(mediaCollection, userEmail, mediaData);
   }
 
-  const index = document.indexOf(movieId);
+  console.log(document);
+  console.log(mediaData.mediaId);
+
+  const index = document.findIndex(
+    (item: any) =>
+      item.mediaId === mediaData.mediaId &&
+      item.mediaType === mediaData.mediaType
+  );
 
   if (index === -1) {
-    document.push(movieId);
+    document.push(mediaData);
   } else {
     document.splice(index, 1);
   }
 
-  await updateDocument(mediaType, userEmail, document);
+  await updateDocument(mediaCollection, userEmail, document);
 };

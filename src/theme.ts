@@ -1,4 +1,4 @@
-import { createTheme, responsiveFontSizes } from "@mui/material/styles";
+import { Theme, createTheme, responsiveFontSizes } from "@mui/material/styles";
 declare module "@mui/material/styles" {
   interface PaletteOptions {
     customColors: {
@@ -30,7 +30,7 @@ const staticThemeColors = {
   },
 };
 
-const theme = responsiveFontSizes(
+const theme: Theme = responsiveFontSizes(
   createTheme({
     palette: {
       common: {
@@ -111,6 +111,21 @@ const theme = responsiveFontSizes(
       },
     },
     components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          html: {
+            "& ::-webkit-scrollbar": {
+              width: "10px",
+              height: "8px",
+            },
+            "& ::-webkit-scrollbar-track": {
+              background: "#b3b3b3",
+            },
+            "& ::-webkit-scrollbar-thumb": { background: "#888" },
+            "& ::-webkit-scrollbar-thumb:hover": { background: "#555" },
+          },
+        },
+      },
       MuiContainer: {
         styleOverrides: {
           root: {

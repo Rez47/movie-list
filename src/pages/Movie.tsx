@@ -21,13 +21,15 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import Snackbar from "../components/MUIComponents/Snackbar";
 import { getDocument } from "../helpers/firestore";
+import { MediaData } from "../helpers/types";
 
 const Movie = () => {
   const { id } = useParams();
+  const theme = useTheme();
+  const { currentUser } = useSelector((state: RootState) => state.user);
   const [movieData, setMoviesData] = useState<MovieType>();
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isWatchlist, setIsWatchlist] = useState<boolean>(false);
-  const { currentUser } = useSelector((state: RootState) => state.user);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [snackbarContent, setSnackbarContent] = useState<{
     message: string;
@@ -37,38 +39,6 @@ const Movie = () => {
     severity: "success",
   });
 
-  const handleAddToFavorites = async () => {
-    if (!movieData) return;
-    await handleMediaFavorite(
-      movieData.id.toString(),
-      currentUser.email,
-      "favourite"
-    ).then(() => {
-      setIsFavorite(!isFavorite);
-      setSnackbarContent({
-        message: isFavorite ? "Removed from favorites" : "Added to favorites",
-        severity: "success",
-      });
-      setOpenSnackbar(true);
-    });
-  };
-
-  const handleAddToWatchlist = async () => {
-    if (!movieData) return;
-    await handleMediaFavorite(
-      movieData.id.toString(),
-      currentUser.email,
-      "watchlist"
-    ).then(() => {
-      setIsWatchlist(!isWatchlist);
-      setSnackbarContent({
-        message: isWatchlist ? "Removed from watchlist" : "Added to watchlist",
-        severity: "success",
-      });
-      setOpenSnackbar(true);
-    });
-  };
-
   useEffect(() => {
     (async () => {
       try {
@@ -76,6 +46,7 @@ const Movie = () => {
           const movieData = await callApi<MovieType>({
             query: getMovieDetails(id),
           });
+
           setMoviesData(movieData);
 
           const favoritesData = await getDocument(
@@ -102,7 +73,44 @@ const Movie = () => {
     })();
   }, [id, currentUser]);
 
-  const theme = useTheme();
+  const handleAddToFavorites = async () => {
+    if (!movieData) return;
+
+    const body: MediaData = {
+      mediaId: movieData.id.toString(),
+      mediaType: "movie",
+    };
+
+    await handleMediaFavorite(body, currentUser.email, "favourite").then(() => {
+      setIsFavorite(!isFavorite);
+      setSnackbarContent({
+        message: isFavorite ? "Removed from favorites" : "Added to favorites",
+        severity: "success",
+      });
+      setOpenSnackbar(true);
+    });
+  };
+
+  const handleAddToWatchlist = async () => {
+    if (!movieData) return;
+    const body: MediaData = {
+      mediaId: movieData.id.toString(),
+      mediaType: "movie",
+    };
+
+    await handleMediaFavorite(body, currentUser.email, "watchlist").then(() => {
+      setIsWatchlist(!isWatchlist);
+      setSnackbarContent({
+        message: isWatchlist ? "Removed from watchlist" : "Added to watchlist",
+        severity: "success",
+      });
+      setOpenSnackbar(true);
+    });
+  };
+
+  // TODO: moves styles on top
+  // TODO: ? to ternery operator
+
   return (
     <>
       <Layout>
@@ -211,9 +219,13 @@ const Movie = () => {
                 {movieData?.overview}
               </Typography>
               <Typography component="p" variant="body2">
-                <span style={{ color: theme.palette.common.white }}>
+                <Typography
+                  component="span"
+                  variant="body2"
+                  style={{ color: theme.palette.common.white }}
+                >
                   Lenght:{" "}
-                </span>
+                </Typography>
                 {movieData?.runtime} minutes
               </Typography>
               <Typography component="p" variant="body2">

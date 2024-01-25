@@ -8,17 +8,11 @@ import { callApi } from "../services/callApi";
 import SmallMovieList from "../components/SmallComponents/List/SmallMovieList";
 import { getPopularSeriesList } from "../services/SeriesList/apiGetSeriesList";
 import Layout from "../Layout";
-// import Alert, { AlertType } from "../components/MUIComponents/Alert";
 
 const Home = () => {
   const [popularMoviesData, setPopularMoviesData] = useState<Movie[]>([]);
   const [popularSeriesData, setPopularSeriesData] = useState<Series[]>([]);
   const [nowPlayingMoviesData, setNowPlayingMoviesData] = useState<Movie[]>([]);
-  // const [showAlert, setShowAlert] = useState<boolean>(false);
-  // const [alert, setAlert] = useState<AlertType>({
-  //   message: "",
-  //   severity: "error",
-  // });
 
   useEffect(() => {
     (async () => {
@@ -60,13 +54,6 @@ const Home = () => {
           moviesData={popularMoviesData}
           setMoviesData={setPopularMoviesData}
         />
-        {/* <Alert
-          severity={alert.severity}
-          text={alert.message}
-          showError={showAlert}
-          setShowError={setShowAlert}
-          isStatic
-        /> */}
         <SmallMovieList
           title="Popular Series"
           seriesData={popularSeriesData}

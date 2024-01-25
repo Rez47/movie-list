@@ -21,6 +21,7 @@ import { handleMediaFavorite } from "../helpers/functions";
 import { getDocument } from "../helpers/firestore";
 import Snackbar from "../components/MUIComponents/Snackbar";
 import { RootState } from "../store/store";
+import { MediaData } from "../helpers/types";
 
 const Series = () => {
   const { id } = useParams();
@@ -39,11 +40,13 @@ const Series = () => {
 
   const handleAddToFavorites = async () => {
     if (!seriesData) return;
-    await handleMediaFavorite(
-      seriesData.id.toString(),
-      currentUser.email,
-      "favourite"
-    ).then(() => {
+
+    const body: MediaData = {
+      mediaId: seriesData.id.toString(),
+      mediaType: "tv",
+    };
+
+    await handleMediaFavorite(body, currentUser.email, "favourite").then(() => {
       setIsFavorite(!isFavorite);
       setSnackbarContent({
         message: isFavorite ? "Removed from favorites" : "Added to favorites",
@@ -55,11 +58,13 @@ const Series = () => {
 
   const handleAddToWatchlist = async () => {
     if (!seriesData) return;
-    await handleMediaFavorite(
-      seriesData.id.toString(),
-      currentUser.email,
-      "watchlist"
-    ).then(() => {
+
+    const body: MediaData = {
+      mediaId: seriesData.id.toString(),
+      mediaType: "tv",
+    };
+
+    await handleMediaFavorite(body, currentUser.email, "watchlist").then(() => {
       setIsWatchlist(!isWatchlist);
       setSnackbarContent({
         message: isWatchlist ? "Removed from watchlist" : "Added to watchlist",
