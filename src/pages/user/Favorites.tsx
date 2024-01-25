@@ -60,19 +60,24 @@ const Favorites = () => {
           width: "100%",
           display: "grid",
           gridTemplateColumns: {
-            xs: "repeat(auto-fit, minmax(120px, max-content))",
-            md: "repeat(auto-fit, minmax(160px, max-content))",
+            xs: "repeat(auto-fit, minmax(170px, max-content))",
+            md: "repeat(auto-fit, minmax(170px, max-content))",
           },
           gap: 2,
           mt: 2,
-          justifyContent: "start",
-          padding: "0 4rem",
+          justifyContent: "center",
+          padding: "0 2rem",
         }}
       >
         {mediaData?.map((media) => (
-          <Stack key={media.id} flexWrap="wrap">
+          <Stack
+            key={media.id}
+            flexWrap="wrap"
+            width={160}
+            justifyContent="space-between"
+          >
             <Box
-              width={170}
+              width={160}
               sx={{
                 backgroundImage: `url(https://image.tmdb.org/t/p/original${media.poster_path})`,
                 backgroundRepeat: "no-repeat",
@@ -86,8 +91,11 @@ const Favorites = () => {
             <Typography>{media.title}</Typography>
             <Stack direction="row" justifyContent="space-between">
               <Typography>{media.release_date.slice(0, 4)}</Typography>
-              <StarIcon />
-              <Typography>{media.vote_average}</Typography>
+              <Stack direction="row" gap={1} justifyContent="center">
+                <StarIcon sx={{ fontSize: "1.4rem" }} />
+                <Typography>{media.vote_average.toFixed(1)}</Typography>
+              </Stack>
+              <Typography>{media.title ? "Movie" : "Series"}</Typography>
             </Stack>
           </Stack>
         ))}
