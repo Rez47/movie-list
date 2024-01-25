@@ -1,6 +1,3 @@
 export type Collection = "favourite" | "watchlist";
 
-export type Media = {
-  id: string;
-  mediaType: "movie" | "series";
-};
+export type Media = string;

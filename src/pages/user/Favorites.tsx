@@ -2,24 +2,42 @@ import { useEffect, useState } from "react";
 import Layout from "../../Layout";
 import { Typography, Stack } from "@mui/material";
 import { getDocument } from "../../helpers/firestore";
-import { Media } from "../../helpers/types";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
+import { callApi } from "../../services/callApi";
+import { getMovieDetails } from "../../services/Movie/apiGetMovie";
 
 const Favorites = () => {
-  const [favouriteMediaData, setFavouriteMediaData] = useState<Media[]>([]);
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const [favouritesData, setFavouritesData] = useState<string[]>();
+  const [mediaData, setMediaData] = useState<any[]>();
 
   useEffect(() => {
     (async () => {
-      const favouriteMediaData = await getDocument(
+      const favouriteMediaData: string[] = await getDocument(
         "favourite",
         currentUser.email
       );
 
-      if (favouriteMediaData) setFavouriteMediaData(favouriteMediaData);
+      if (favouriteMediaData) setFavouritesData(favouriteMediaData);
     })();
   }, [currentUser]);
+
+  useEffect(() => {
+    (async () => {
+      if (favouritesData) {
+        let mediaDataArray: any[] = [];
+
+        favouritesData.map(async (media: any) => {
+          const movieData = await callApi({ query: getMovieDetails(media) });
+
+          mediaDataArray.push(movieData);
+        });
+
+        setMediaData(mediaDataArray);
+      }
+    })();
+  }, [favouritesData]);
 
   return (
     <Layout>
@@ -32,18 +50,9 @@ const Favorites = () => {
         Favorites
       </Typography>
       <Stack gap={3}>
-        {favouriteMediaData ? (
-          <>
-            {favouriteMediaData.map((media) => {
-              if (favouriteMediaData.length === 0) {
-                return <Typography key={media.id}>No movies</Typography>;
-              }
-              return <Typography key={media.id}>{media.id}</Typography>;
-            })}
-          </>
-        ) : (
-          "Loading..."
-        )}
+        {mediaData?.map((media) => (
+          <p key={media.id}>{media.title}</p>
+        ))}
       </Stack>
     </Layout>
   );

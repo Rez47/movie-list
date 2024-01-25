@@ -1,20 +1,38 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { callApi } from "../services/callApi";
 import { Movie as MovieType } from "../services/apiTypes";
 import { getMovieDetails } from "../services/Movie/apiGetMovie";
-import { Box, Container, Stack, Typography, useTheme } from "@mui/material";
+import {
+  AlertColor,
+  Box,
+  Container,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import Layout from "../Layout";
 import Favorite from "@mui/icons-material/Favorite";
 import AddToQueueIcon from "@mui/icons-material/AddToQueue";
 import { handleMediaFavorite } from "../helpers/functions";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import Snackbar from "../components/MUIComponents/Snackbar";
+import { getDocument } from "../helpers/firestore";
 
 const Movie = () => {
   const { id } = useParams();
   const [movieData, setMoviesData] = useState<MovieType>();
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [snackbarContent, setSnackbarContent] = useState<{
+    message: string;
+    severity: AlertColor;
+  }>({
+    message: "",
+    severity: "success",
+  });
 
   const handleAddToFavorites = async () => {
     if (!movieData) return;
@@ -22,10 +40,30 @@ const Movie = () => {
       movieData.id.toString(),
       currentUser.email,
       "favourite"
-    );
+    ).then(() => {
+      setIsFavorite(!isFavorite);
+      setSnackbarContent({
+        message: isFavorite ? "Remove from favorites" : "Added to favorites",
+        severity: "success",
+      });
+      setOpenSnackbar(true);
+    });
   };
 
-  const handleAddToWatchlist = () => {};
+  const handleAddToWatchlist = async () => {
+    if (!movieData) return;
+    await handleMediaFavorite(
+      movieData.id.toString(),
+      currentUser.email,
+      "watchlist"
+    ).then(() => {
+      setSnackbarContent({
+        message: "Added to favorites",
+        severity: "success",
+      });
+      setOpenSnackbar(true);
+    });
+  };
 
   useEffect(() => {
     (async () => {
@@ -35,12 +73,25 @@ const Movie = () => {
             query: getMovieDetails(id),
           });
           setMoviesData(movieData);
+
+          const favoritesData = await getDocument(
+            "favourite",
+            currentUser.email
+          );
+
+          const index = favoritesData.indexOf(id);
+
+          if (index === -1) {
+            setIsFavorite(false);
+          } else {
+            setIsFavorite(true);
+          }
         }
       } catch (err) {
         console.log(err);
       }
     })();
-  }, [id]);
+  }, [id, currentUser]);
 
   const theme = useTheme();
   return (
@@ -98,7 +149,7 @@ const Movie = () => {
                     variant="body1"
                     sx={{ maxWidth: "max-content" }}
                   >
-                    Add to favorites
+                    {isFavorite ? "Remove from favorites" : "Add to favorites"}
                   </Typography>
                 </Stack>
                 <Stack
@@ -219,6 +270,13 @@ const Movie = () => {
               </Stack>
             </Stack>
           </Stack>
+
+          <Snackbar
+            message={snackbarContent.message}
+            severity={snackbarContent.severity}
+            open={openSnackbar}
+            setOpen={setOpenSnackbar}
+          />
         </Container>
       </Layout>
     </>

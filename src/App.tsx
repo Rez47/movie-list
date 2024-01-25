@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import theme from "./theme";
 import Home from "./pages/Home";
@@ -11,8 +12,25 @@ import Favorites from "./pages/user/Favorites";
 import Watchlist from "./pages/user/Watchlist";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const App = () => {
+  const auth = getAuth();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        if (
+          window.location.pathname === "/user/profile" ||
+          window.location.pathname === "/user/favorites" ||
+          window.location.pathname === "/user/watchlist"
+        ) {
+          window.location.href = "/auth/login";
+        }
+      }
+    });
+  }, [auth]);
+
   return (
     <BrowserRouter>
       <Provider store={store}>
@@ -27,7 +45,9 @@ const App = () => {
             <Route path="/auth/register" element={<Register />} />
 
             <Route path="/user/profile" element={<Profile />} />
+
             <Route path="/user/favorites" element={<Favorites />} />
+
             <Route path="/user/watchlist" element={<Watchlist />} />
           </Routes>
         </ThemeProvider>

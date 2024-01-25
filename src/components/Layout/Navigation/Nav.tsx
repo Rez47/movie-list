@@ -24,7 +24,6 @@ const Nav = () => {
           email: user.email,
         };
         dispatch(login(currentUser));
-        console.log(currentUser);
       }
     });
   }, [auth, dispatch]);

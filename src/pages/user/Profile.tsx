@@ -8,8 +8,6 @@ import { Stack } from "@mui/system";
 const Profile = () => {
   const user = useSelector((state: RootState) => state.user.currentUser);
 
-  console.log(user);
-
   return (
     <Layout>
       <Container

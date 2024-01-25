@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 
 const Watchlist = () => {
-  const [watchlistMediaData, setWatchlistMediaData] = useState<Media[]>([]);
+  const [watchlistMediaData, setWatchlistMediaData] = useState<Media[]>();
   const { currentUser } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
@@ -34,12 +34,15 @@ const Watchlist = () => {
       <Stack gap={3}>
         {watchlistMediaData ? (
           <>
-            {watchlistMediaData.map((media) => {
-              if (watchlistMediaData.length > 0) {
-                return <Typography key={media.id}>No Watchlist</Typography>;
-              }
-              return <Typography key={media.id}>{media.id}</Typography>;
-            })}
+            {watchlistMediaData.length === 0 ? (
+              <Typography>No movies added</Typography>
+            ) : (
+              <>
+                {watchlistMediaData.map((media, index) => (
+                  <Typography key={index}>{media}</Typography>
+                ))}
+              </>
+            )}
           </>
         ) : (
           "Loading..."

@@ -1,6 +1,6 @@
 import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../config/firebase";
-import { Collection, Media } from "./types";
+import { Collection } from "./types";
 
 export const getDocument = async (
   collection: Collection,
@@ -23,7 +23,7 @@ export const getDocument = async (
 export const createDocument = async (
   collection: Collection,
   userEmail: string,
-  body: Media
+  body: string
 ) => {
   try {
     await setDoc(doc(db, collection, userEmail), {
@@ -37,7 +37,7 @@ export const createDocument = async (
 export const updateDocument = async (
   collection: Collection,
   userEmail: string,
-  body: Media
+  body: string[]
 ) => {
   try {
     const document = await getDoc(doc(db, collection, userEmail));
@@ -48,15 +48,7 @@ export const updateDocument = async (
       console.log("Document data:", document.data());
     }
 
-    const documentData = document.data();
-
-    if (!documentData) return;
-
-    const media = documentData.media;
-
-    media.push(body);
-
-    await setDoc(doc(db, collection, userEmail), { media });
+    await setDoc(doc(db, collection, userEmail), { media: body });
   } catch (e) {
     console.error("Error updating a document: ", e);
   }

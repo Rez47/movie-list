@@ -25,17 +25,6 @@ const ProfileNav = () => {
   const user = useSelector((state: RootState) => state.user.currentUser);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
-  // useEffect(() => {
-  //   onAuthStateChanged(auth, (user) => {
-  //     if (user) {
-  //       setCurrentUser(user);
-  //       console.log(user);
-  //     } else {
-  //       console.log("user is logged out");
-  //     }
-  //   });
-  // }, []);
-
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -51,8 +40,6 @@ const ProfileNav = () => {
       console.log(err);
     }
   };
-
-  console.log(user);
 
   return (
     <Box sx={{ flexGrow: 0 }}>
