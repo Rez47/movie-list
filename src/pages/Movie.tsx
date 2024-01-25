@@ -11,9 +11,11 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import Layout from "../Layout";
 import Favorite from "@mui/icons-material/Favorite";
+import NotInterestedIcon from "@mui/icons-material/NotInterested";
 import AddToQueueIcon from "@mui/icons-material/AddToQueue";
+import RemoveFromQueueIcon from "@mui/icons-material/RemoveFromQueue";
+import Layout from "../Layout";
 import { handleMediaFavorite } from "../helpers/functions";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
@@ -24,6 +26,7 @@ const Movie = () => {
   const { id } = useParams();
   const [movieData, setMoviesData] = useState<MovieType>();
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [isWatchlist, setIsWatchlist] = useState<boolean>(false);
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [snackbarContent, setSnackbarContent] = useState<{
@@ -43,7 +46,7 @@ const Movie = () => {
     ).then(() => {
       setIsFavorite(!isFavorite);
       setSnackbarContent({
-        message: isFavorite ? "Remove from favorites" : "Added to favorites",
+        message: isFavorite ? "Removed from favorites" : "Added to favorites",
         severity: "success",
       });
       setOpenSnackbar(true);
@@ -57,8 +60,9 @@ const Movie = () => {
       currentUser.email,
       "watchlist"
     ).then(() => {
+      setIsWatchlist(!isWatchlist);
       setSnackbarContent({
-        message: "Added to favorites",
+        message: isWatchlist ? "Removed from watchlist" : "Added to watchlist",
         severity: "success",
       });
       setOpenSnackbar(true);
@@ -79,13 +83,18 @@ const Movie = () => {
             currentUser.email
           );
 
-          const index = favoritesData.indexOf(id);
+          const favoritesIndex = favoritesData.indexOf(id);
 
-          if (index === -1) {
-            setIsFavorite(false);
-          } else {
-            setIsFavorite(true);
-          }
+          setIsFavorite(favoritesIndex !== -1);
+
+          const watchlistData = await getDocument(
+            "watchlist",
+            currentUser.email
+          );
+
+          const watchlistIndex = watchlistData.indexOf(id);
+
+          setIsWatchlist(watchlistIndex !== -1);
         }
       } catch (err) {
         console.log(err);
@@ -143,7 +152,7 @@ const Movie = () => {
                   gap={1}
                   onClick={handleAddToFavorites}
                 >
-                  <Favorite />
+                  {isFavorite ? <NotInterestedIcon /> : <Favorite />}
                   <Typography
                     component="p"
                     variant="body1"
@@ -158,9 +167,9 @@ const Movie = () => {
                   gap={1}
                   onClick={handleAddToWatchlist}
                 >
-                  <AddToQueueIcon />
+                  {isWatchlist ? <RemoveFromQueueIcon /> : <AddToQueueIcon />}
                   <Typography component="p" variant="body1">
-                    Add to watchlist
+                    {isWatchlist ? "Remove from watchlist" : "Add to watchlist"}
                   </Typography>
                 </Stack>
               </Stack>
@@ -254,8 +263,10 @@ const Movie = () => {
                   alignItems="center"
                   onClick={handleAddToFavorites}
                 >
-                  <Favorite />
-                  <Typography>Add to favorites</Typography>
+                  {isFavorite ? <NotInterestedIcon /> : <Favorite />}
+                  <Typography>
+                    {isFavorite ? "Remove from favorites" : "Add to favorites"}
+                  </Typography>
                 </Stack>
                 <Stack
                   direction="row"
@@ -264,8 +275,10 @@ const Movie = () => {
                   alignItems="center"
                   onClick={handleAddToWatchlist}
                 >
-                  <AddToQueueIcon />
-                  <Typography>Add to watchlist</Typography>
+                  {isWatchlist ? <RemoveFromQueueIcon /> : <AddToQueueIcon />}
+                  <Typography>
+                    {isWatchlist ? "Remove from watchlist" : "Add to watchlist"}
+                  </Typography>
                 </Stack>
               </Stack>
             </Stack>

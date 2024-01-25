@@ -72,55 +72,6 @@ const Register = () => {
     }
   };
 
-  // const handleRegister = async () => {
-  //   setLoading(true);
-  //   setShowAlert(false);
-  //   setAlert({ message: "", severity: "error" });
-
-  //   if (email === "") {
-  //     setShowAlert(true);
-  //     setAlert({ message: "Email Address is required", severity: "error" });
-  //     setLoading(false);
-  //     return;
-  //   }
-
-  //   if (password === "") {
-  //     setShowAlert(true);
-  //     setAlert({ message: "Password is required", severity: "error" });
-  //     setLoading(false);
-  //     return;
-  //   }
-
-  //   if (confirmPassword === "") {
-  //     setShowAlert(true);
-  //     setAlert({ message: "Confirm Password is required", severity: "error" });
-  //     setLoading(false);
-  //     return;
-  //   }
-
-  //   if (password !== confirmPassword) {
-  //     setShowAlert(true);
-  //     setAlert({ message: "Passwords do not match", severity: "error" });
-  //     setLoading(false);
-  //     return;
-  //   }
-
-  //   try {
-  //     await createUserWithEmailAndPassword(auth, email, password).then(
-  //       (user) => {
-  //         navigate("/auth/login");
-  //         setLoading(false);
-  //       }
-  //     );
-  //   } catch (error: any) {
-  //     setLoading(false);
-  //     setShowAlert(true);
-  //     setAlert({ message: error.message.substring(10), severity: "error" });
-  //     console.log(error);
-  //     throw new Error("Could not create user " + error);
-  //   }
-  // };
-
   return (
     <Stack
       width="100vw"

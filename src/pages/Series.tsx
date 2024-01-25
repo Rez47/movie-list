@@ -3,12 +3,72 @@ import { useParams } from "react-router-dom";
 import { callApi } from "../services/callApi";
 import { Series as SeriesType } from "../services/apiTypes";
 import { getSeriesDetails } from "../services/Series/apiGetSeries";
-import { Box, Container, Stack, Typography, useTheme } from "@mui/material";
+import {
+  AlertColor,
+  Box,
+  Container,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import Favorite from "@mui/icons-material/Favorite";
+import NotInterestedIcon from "@mui/icons-material/NotInterested";
+import AddToQueueIcon from "@mui/icons-material/AddToQueue";
+import RemoveFromQueueIcon from "@mui/icons-material/RemoveFromQueue";
 import Layout from "../Layout";
+import { useSelector } from "react-redux";
+import { handleMediaFavorite } from "../helpers/functions";
+import { getDocument } from "../helpers/firestore";
+import Snackbar from "../components/MUIComponents/Snackbar";
+import { RootState } from "../store/store";
 
 const Series = () => {
   const { id } = useParams();
   const [seriesData, setSeriesData] = useState<SeriesType>();
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [isWatchlist, setIsWatchlist] = useState<boolean>(false);
+  const { currentUser } = useSelector((state: RootState) => state.user);
+  const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
+  const [snackbarContent, setSnackbarContent] = useState<{
+    message: string;
+    severity: AlertColor;
+  }>({
+    message: "",
+    severity: "success",
+  });
+
+  const handleAddToFavorites = async () => {
+    if (!seriesData) return;
+    await handleMediaFavorite(
+      seriesData.id.toString(),
+      currentUser.email,
+      "favourite"
+    ).then(() => {
+      setIsFavorite(!isFavorite);
+      setSnackbarContent({
+        message: isFavorite ? "Removed from favorites" : "Added to favorites",
+        severity: "success",
+      });
+      setOpenSnackbar(true);
+    });
+  };
+
+  const handleAddToWatchlist = async () => {
+    if (!seriesData) return;
+    await handleMediaFavorite(
+      seriesData.id.toString(),
+      currentUser.email,
+      "watchlist"
+    ).then(() => {
+      setIsWatchlist(!isWatchlist);
+      setSnackbarContent({
+        message: isWatchlist ? "Removed from watchlist" : "Added to watchlist",
+        severity: "success",
+      });
+      setOpenSnackbar(true);
+    });
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -17,12 +77,30 @@ const Series = () => {
             query: getSeriesDetails(id),
           });
           setSeriesData(seriesData);
+
+          const favoritesData = await getDocument(
+            "favourite",
+            currentUser.email
+          );
+
+          const favoritesIndex = favoritesData.indexOf(id);
+
+          setIsFavorite(favoritesIndex !== -1);
+
+          const watchlistData = await getDocument(
+            "watchlist",
+            currentUser.email
+          );
+
+          const watchlistIndex = watchlistData.indexOf(id);
+
+          setIsWatchlist(watchlistIndex !== -1);
         }
       } catch (err) {
         console.log(err);
       }
     })();
-  }, [id]);
+  }, [id, currentUser]);
 
   const theme = useTheme();
   return (
@@ -38,26 +116,63 @@ const Series = () => {
             marginTop="1rem"
             p={4}
           >
-            <Box
-              sx={{
-                padding: "1rem",
-                border: `0.2rem solid ${theme.palette.common.white}`,
-                borderRadius: "0.5rem",
-              }}
-            >
+            <Stack>
               <Box
-                width={250}
-                height={350}
                 sx={{
-                  backgroundImage: `url(https://image.tmdb.org/t/p/original${seriesData?.poster_path})`,
-                  backgroundSize: "cover",
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  objectFit: "contain",
+                  padding: "1rem",
+                  border: `0.2rem solid ${theme.palette.common.white}`,
                   borderRadius: "0.5rem",
                 }}
-              ></Box>
-            </Box>
+              >
+                <Box
+                  width={250}
+                  height={350}
+                  sx={{
+                    backgroundImage: `url(https://image.tmdb.org/t/p/original${seriesData?.poster_path})`,
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    objectFit: "contain",
+                    borderRadius: "0.5rem",
+                  }}
+                ></Box>
+              </Box>
+              <Stack
+                direction="column"
+                px={2}
+                py={4}
+                display={{ xs: "none", md: "flex" }}
+                gap={2}
+                alignItems="center"
+              >
+                <Stack
+                  direction="row"
+                  sx={{ cursor: "pointer" }}
+                  gap={1}
+                  onClick={handleAddToFavorites}
+                >
+                  {isFavorite ? <NotInterestedIcon /> : <Favorite />}
+                  <Typography
+                    component="p"
+                    variant="body1"
+                    sx={{ maxWidth: "max-content" }}
+                  >
+                    {isFavorite ? "Remove from favorites" : "Add to favorites"}
+                  </Typography>
+                </Stack>
+                <Stack
+                  direction="row"
+                  sx={{ cursor: "pointer" }}
+                  gap={1}
+                  onClick={handleAddToWatchlist}
+                >
+                  {isWatchlist ? <RemoveFromQueueIcon /> : <AddToQueueIcon />}
+                  <Typography component="p" variant="body1">
+                    {isWatchlist ? "Remove from watchlist" : "Add to watchlist"}
+                  </Typography>
+                </Stack>
+              </Stack>
+            </Stack>
 
             <Stack
               gap="1rem"
@@ -131,6 +246,12 @@ const Series = () => {
               </Typography>
             </Stack>
           </Stack>
+          <Snackbar
+            message={snackbarContent.message}
+            severity={snackbarContent.severity}
+            open={openSnackbar}
+            setOpen={setOpenSnackbar}
+          />
         </Container>
       </Layout>
     </>
