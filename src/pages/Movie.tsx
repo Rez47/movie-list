@@ -43,29 +43,32 @@ const Movie = () => {
     (async () => {
       try {
         if (id) {
-          const movieData = await callApi<MovieType>({
+          const movieDataCall = await callApi<MovieType>({
             query: getMovieDetails(id),
           });
 
-          setMoviesData(movieData);
+          setMoviesData(movieDataCall);
 
           const favoritesData = await getDocument(
             "favourite",
             currentUser.email
           );
 
-          const favoritesIndex = favoritesData.indexOf(id);
-
-          setIsFavorite(favoritesIndex !== -1);
+          const isThereFavoriteMediaId = favoritesData?.findIndex(
+            (item: any) => item.mediaId === id
+          );
+          setIsFavorite(true ? isThereFavoriteMediaId !== -1 : false);
 
           const watchlistData = await getDocument(
             "watchlist",
             currentUser.email
           );
 
-          const watchlistIndex = watchlistData.indexOf(id);
+          const isThereWatchlistMediaId = watchlistData?.findIndex(
+            (item: any) => item.mediaId === id
+          );
 
-          setIsWatchlist(watchlistIndex !== -1);
+          setIsWatchlist(true ? isThereWatchlistMediaId !== -1 : false);
         }
       } catch (err) {
         console.log(err);
@@ -114,7 +117,13 @@ const Movie = () => {
   return (
     <>
       <Layout>
-        <Container>
+        <Container
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "start",
+          }}
+        >
           <Stack
             direction="row"
             justifyContent="center"
@@ -123,6 +132,7 @@ const Movie = () => {
             gap="2rem"
             marginTop="1rem"
             p={4}
+            maxWidth="80%"
           >
             <Stack direction="column">
               <Box
@@ -229,14 +239,16 @@ const Movie = () => {
                 {movieData?.runtime} minutes
               </Typography>
               <Typography component="p" variant="body2">
-                <span
+                <Typography
+                  component="span"
+                  variant="body2"
                   style={{
                     color: `${theme.palette.common.white}`,
                     fontWeight: "600",
                   }}
                 >
                   Production Country:{" "}
-                </span>
+                </Typography>
                 <Stack
                   direction="row"
                   justifyContent="flex-start"

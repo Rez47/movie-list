@@ -88,18 +88,21 @@ const Series = () => {
             currentUser.email
           );
 
-          const favoritesIndex = favoritesData.indexOf(id);
-
-          setIsFavorite(favoritesIndex !== -1);
+          const isThereFavoriteMediaId = favoritesData?.findIndex(
+            (item: any) => item.mediaId === id
+          );
+          setIsFavorite(true ? isThereFavoriteMediaId !== -1 : false);
 
           const watchlistData = await getDocument(
             "watchlist",
             currentUser.email
           );
 
-          const watchlistIndex = watchlistData.indexOf(id);
+          const isThereWatchlistMediaId = watchlistData?.findIndex(
+            (item: any) => item.mediaId === id
+          );
 
-          setIsWatchlist(watchlistIndex !== -1);
+          setIsWatchlist(true ? isThereWatchlistMediaId !== -1 : false);
         }
       } catch (err) {
         console.log(err);
