@@ -197,13 +197,6 @@ const theme: Theme = responsiveFontSizes(
           },
         },
       },
-      MuiCircularProgress: {
-        styleOverrides: {
-          root: {
-            animationDuration: "200ms",
-          },
-        },
-      },
     },
   })
 );

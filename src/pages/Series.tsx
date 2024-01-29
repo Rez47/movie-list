@@ -312,7 +312,7 @@ const Series = () => {
           >
             <CircularProgress size="6rem" />
             <Typography component="h3" variant="h3">
-              Fetching series...
+              Fetching series information...
             </Typography>
           </Stack>
         )}
