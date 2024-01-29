@@ -15,6 +15,7 @@ const Favorites = () => {
   const [favouritesMediaData, setFavouritesMediaData] = useState<string[]>([]);
   const [moviesData, setMoviesData] = useState<Movie[]>([]);
   const [seriesData, setSeriesData] = useState<Series[]>([]);
+  console.log(favouritesMediaData);
 
   useEffect(() => {
     (async () => {

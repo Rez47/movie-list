@@ -11,7 +11,7 @@ export const getDocument = async (
 
     if (!document.exists()) {
       console.log("No such document!");
-      return;
+      return [];
     }
 
     return document.data().media;

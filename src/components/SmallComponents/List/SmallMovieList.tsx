@@ -1,4 +1,10 @@
-import { Box, Typography, Pagination, Stack } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Pagination,
+  Stack,
+  CircularProgress,
+} from "@mui/material";
 import {
   Movie,
   MovieList,
@@ -71,6 +77,8 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
     }
   };
 
+  console.log(moviesData);
+
   const handleSeriesPageChange = async (
     event: React.ChangeEvent<unknown>,
     value: number
@@ -114,6 +122,23 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
               moviesData.map((movieData) => {
                 return <MovieCard movieData={movieData} />;
               })}
+            {moviesData.length === 0 && (
+              <Stack
+                height="100%"
+                gap={6}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <CircularProgress
+                  size="4rem"
+                  thickness={5}
+                  sx={{ animationDuration: "200ms" }}
+                />{" "}
+                <Typography component="h3" variant="h3">
+                  Loading...
+                </Typography>
+              </Stack>
+            )}
           </>
         )}
         {nowPlayingMoviesData && (
@@ -122,6 +147,23 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
               nowPlayingMoviesData.map((movieData) => {
                 return <MovieCard movieData={movieData} />;
               })}
+            {nowPlayingMoviesData.length === 0 && (
+              <Stack
+                height="100%"
+                gap={6}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <CircularProgress
+                  size="4rem"
+                  thickness={5}
+                  sx={{ animationDuration: "200ms" }}
+                />{" "}
+                <Typography component="h3" variant="h3">
+                  Loading...
+                </Typography>
+              </Stack>
+            )}
           </>
         )}
       </Box>
@@ -144,6 +186,23 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
             seriesData.map((seriesData) => {
               return <SeriesCard seriesData={seriesData} />;
             })}
+          {seriesData.length === 0 && (
+            <Stack
+              height="100%"
+              gap={6}
+              justifyContent="center"
+              alignItems="center"
+            >
+              <CircularProgress
+                size="4rem"
+                thickness={5}
+                sx={{ animationDuration: "200ms" }}
+              />{" "}
+              <Typography component="h3" variant="h3">
+                Loading...
+              </Typography>
+            </Stack>
+          )}
         </Box>
       )}
       <Stack spacing={2} justifyContent="center" alignItems="center" mt={4}>

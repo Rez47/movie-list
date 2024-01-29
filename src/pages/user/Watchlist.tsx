@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "../../Layout";
-import { Typography, Stack, Box } from "@mui/material";
+import { Typography, Stack, Box, Link } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import { getDocument } from "../../helpers/firestore";
 import { Media } from "../../helpers/types";
@@ -84,65 +84,69 @@ const Watchlist = () => {
           }}
         >
           {moviesData?.map((media) => (
-            <Stack
-              key={media.id}
-              flexWrap="wrap"
-              width={160}
-              justifyContent="space-between"
-            >
-              <Box
+            <Link href={`/movie/${media.id}`}>
+              <Stack
+                key={media.id}
+                flexWrap="wrap"
                 width={160}
-                sx={{
-                  backgroundImage: `url(https://image.tmdb.org/t/p/original${media.poster_path})`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  backgroundSize: "cover",
-                  borderRadius: "5px",
-                  marginBottom: 1,
-                  aspectRatio: 4 / 6,
-                }}
-              />
-              <Typography>{media.title}</Typography>
-              <Stack direction="row" justifyContent="space-between">
-                <Typography>{media.release_date.slice(0, 4)}</Typography>
-                <Stack direction="row" gap={1} justifyContent="center">
-                  <StarIcon sx={{ fontSize: "1.4rem" }} />
-                  <Typography>{media.vote_average.toFixed(1)}</Typography>
+                justifyContent="space-between"
+              >
+                <Box
+                  width={160}
+                  sx={{
+                    backgroundImage: `url(https://image.tmdb.org/t/p/original${media.poster_path})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                    borderRadius: "5px",
+                    marginBottom: 1,
+                    aspectRatio: 4 / 6,
+                  }}
+                />
+                <Typography>{media.title}</Typography>
+                <Stack direction="row" justifyContent="space-between">
+                  <Typography>{media.release_date.slice(0, 4)}</Typography>
+                  <Stack direction="row" gap={1} justifyContent="center">
+                    <StarIcon sx={{ fontSize: "1.4rem" }} />
+                    <Typography>{media.vote_average.toFixed(1)}</Typography>
+                  </Stack>
+                  <Typography>Movie</Typography>
                 </Stack>
-                <Typography>Movie</Typography>
               </Stack>
-            </Stack>
+            </Link>
           ))}
 
           {seriesData?.map((media) => (
-            <Stack
-              key={media.id}
-              flexWrap="wrap"
-              width={160}
-              justifyContent="space-between"
-            >
-              <Box
+            <Link href={`/series/${media.id}`}>
+              <Stack
+                key={media.id}
+                flexWrap="wrap"
                 width={160}
-                sx={{
-                  backgroundImage: `url(https://image.tmdb.org/t/p/original${media.poster_path})`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  backgroundSize: "cover",
-                  borderRadius: "5px",
-                  marginBottom: 1,
-                  aspectRatio: 4 / 6,
-                }}
-              />
-              <Typography>{media.name}</Typography>
-              <Stack direction="row" justifyContent="space-between">
-                <Typography>{media.first_air_date.slice(0, 4)}</Typography>
-                <Stack direction="row" gap={1} justifyContent="center">
-                  <StarIcon sx={{ fontSize: "1.4rem" }} />
-                  <Typography>{media.vote_average.toFixed(1)}</Typography>
+                justifyContent="space-between"
+              >
+                <Box
+                  width={160}
+                  sx={{
+                    backgroundImage: `url(https://image.tmdb.org/t/p/original${media.poster_path})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "cover",
+                    borderRadius: "5px",
+                    marginBottom: 1,
+                    aspectRatio: 4 / 6,
+                  }}
+                />
+                <Typography>{media.name}</Typography>
+                <Stack direction="row" justifyContent="space-between">
+                  <Typography>{media.first_air_date.slice(0, 4)}</Typography>
+                  <Stack direction="row" gap={1} justifyContent="center">
+                    <StarIcon sx={{ fontSize: "1.4rem" }} />
+                    <Typography>{media.vote_average.toFixed(1)}</Typography>
+                  </Stack>
+                  <Typography>Series</Typography>
                 </Stack>
-                <Typography>Series</Typography>
               </Stack>
-            </Stack>
+            </Link>
           ))}
         </Stack>
       ) : (
