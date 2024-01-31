@@ -159,9 +159,7 @@ const Series = () => {
   return (
     <>
       <Layout>
-        {seriesData &&
-        favoritesData !== undefined &&
-        watchlistData !== undefined ? (
+        {seriesData ? (
           <Container sx={styles.movieContainer}>
             <Stack
               direction="row"
