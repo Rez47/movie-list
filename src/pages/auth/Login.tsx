@@ -31,6 +31,16 @@ type LoginFormValues = {
   password: string;
 };
 
+const styles = {
+  submutButton: {
+    textAlign: "center",
+    px: "2rem",
+    py: "0.5rem",
+    bgcolor: theme.palette.info.main,
+    margin: "1rem",
+  },
+};
+
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -85,7 +95,7 @@ const Login = () => {
       <Paper sx={{ width: "100%", maxWidth: "600px", padding: 4 }}>
         <Stack justifyContent="center" alignItems="center" gap={2} mb={2}>
           <Typography component="h1" variant="h1">
-            Movie List
+            Medialist
           </Typography>
 
           <Typography component="h2" variant="h3">
@@ -152,17 +162,7 @@ const Login = () => {
                     setShowError={setShowAlert}
                   />
                   <Box>
-                    <Button
-                      label="Login"
-                      isSubmit
-                      sx={{
-                        textAlign: "center",
-                        px: "2rem",
-                        py: "0.5rem",
-                        bgcolor: theme.palette.info.main,
-                        margin: "1rem",
-                      }}
-                    />
+                    <Button label="Login" isSubmit sx={styles.submutButton} />
                   </Box>
                   <Stack
                     flexDirection="column"

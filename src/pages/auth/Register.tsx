@@ -16,6 +16,7 @@ import Alert, { AlertType } from "../../components/MUIComponents/Alert";
 import Button from "../../components/MUIComponents/Button";
 import { Form, Formik } from "formik";
 import { object, ref, string } from "yup";
+import theme from "../../theme";
 
 const fieldValidation = object({
   email: string().email("Email is not valid").required("Email is required"),
@@ -32,6 +33,16 @@ type RegisterFormValues = {
   email: string;
   password: string;
   confirmPassword: string;
+};
+
+const styles = {
+  submutButton: {
+    textAlign: "center",
+    px: "2rem",
+    py: "0.5rem",
+    bgcolor: theme.palette.info.main,
+    margin: "1rem",
+  },
 };
 
 const Register = () => {
@@ -82,7 +93,7 @@ const Register = () => {
       <Paper sx={{ width: "100%", maxWidth: "600px", padding: 4 }}>
         <Stack justifyContent="center" alignItems="center" gap={2} mb={2}>
           <Typography component="h1" variant="h1">
-            Movie List
+            Medialist
           </Typography>
 
           <Typography component="h2" variant="h3">
@@ -172,13 +183,7 @@ const Register = () => {
                     <Button
                       label="Register"
                       isSubmit
-                      sx={{
-                        textAlign: "center",
-                        px: "2rem",
-                        py: "0.5rem",
-                        bgcolor: theme.palette.info.main,
-                        margin: "1rem",
-                      }}
+                      sx={styles.submutButton}
                     />
                   </Box>
                   <Stack

@@ -23,14 +23,45 @@ import { getDocument } from "../helpers/firestore";
 import Snackbar from "../components/MUIComponents/Snackbar";
 import { RootState } from "../store/store";
 import { MediaData } from "../helpers/types";
+import theme from "../theme";
+import { motion } from "framer-motion";
+
+const styles = {
+  movieContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  movieStack: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "2rem",
+    marginTop: "1rem",
+    p: 4,
+    maxWidth: "80%",
+  },
+  imageBorder: {
+    padding: "1rem",
+    border: `0.2rem solid ${theme.palette.common.white}`,
+    borderRadius: "0.5rem",
+  },
+  seriesImage: {
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
+    objectFit: "contain",
+    borderRadius: "0.5rem",
+  },
+};
 
 const Series = () => {
   const { id } = useParams();
   const [seriesData, setSeriesData] = useState<SeriesType>();
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isWatchlist, setIsWatchlist] = useState<boolean>(false);
-  const [favoritesData, setFavoritesData] = useState<boolean>(false);
-  const [watchlistData, setWatchlistData] = useState<boolean>(false);
+  const [favoritesData, setFavoritesData] = useState<[]>();
+  const [watchlistData, setWatchlistData] = useState<[]>();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [openSnackbar, setOpenSnackbar] = useState<boolean>(false);
   const [snackbarContent, setSnackbarContent] = useState<{
@@ -86,32 +117,32 @@ const Series = () => {
           });
           setSeriesData(seriesData);
 
-          const favoritesData = await getDocument(
+          const favoritesDataFetch = await getDocument(
             "favourite",
             currentUser.email
           );
 
-          const watchlistData = await getDocument(
+          const watchlistDataFetch = await getDocument(
             "watchlist",
             currentUser.email
           );
 
-          if (favoritesData) {
-            setFavoritesData(favoritesData);
+          if (favoritesDataFetch) {
+            setFavoritesData(favoritesDataFetch);
           }
-          if (watchlistData) {
-            setWatchlistData(watchlistData);
+          if (watchlistDataFetch) {
+            setWatchlistData(watchlistDataFetch);
           }
 
-          if (favoritesData) {
-            const isThereFavoriteMediaId = favoritesData?.findIndex(
+          if (favoritesDataFetch) {
+            const isThereFavoriteMediaId = favoritesDataFetch?.findIndex(
               (item: any) => item.mediaId === id
             );
             setIsFavorite(true ? isThereFavoriteMediaId !== -1 : false);
           }
 
-          if (watchlistData) {
-            const isThereWatchlistMediaId = watchlistData?.findIndex(
+          if (watchlistDataFetch) {
+            const isThereWatchlistMediaId = watchlistDataFetch?.findIndex(
               (item: any) => item.mediaId === id
             );
 
@@ -128,14 +159,10 @@ const Series = () => {
   return (
     <>
       <Layout>
-        {seriesData && favoritesData && watchlistData ? (
-          <Container
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "start",
-            }}
-          >
+        {seriesData &&
+        favoritesData !== undefined &&
+        watchlistData !== undefined ? (
+          <Container sx={styles.movieContainer}>
             <Stack
               direction="row"
               justifyContent="center"
@@ -147,67 +174,81 @@ const Series = () => {
               maxWidth="80%"
             >
               <Stack>
-                <Box
-                  sx={{
-                    padding: "1rem",
-                    border: `0.2rem solid ${theme.palette.common.white}`,
-                    borderRadius: "0.5rem",
-                  }}
-                >
+                {/* Series image element */}
+                <Box sx={styles.imageBorder}>
                   <Box
                     width={250}
                     height={350}
                     sx={{
+                      ...styles.seriesImage,
                       backgroundImage: `url(https://image.tmdb.org/t/p/original${seriesData?.poster_path})`,
-                      backgroundSize: "cover",
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "center",
-                      objectFit: "contain",
-                      borderRadius: "0.5rem",
                     }}
                   ></Box>
                 </Box>
-                <Stack
-                  direction="column"
-                  px={2}
-                  py={4}
-                  display={{ xs: "none", md: "flex" }}
-                  gap={2}
-                  alignItems="center"
-                >
-                  <Stack
-                    direction="row"
-                    sx={{ cursor: "pointer" }}
-                    gap={1}
-                    onClick={handleAddToFavorites}
+
+                {/* Favorites and Watchlist buttons for desktop viewport */}
+                {!favoritesData && !watchlistData ? (
+                  ""
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, y: 0 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1 }}
                   >
-                    {isFavorite ? <NotInterestedIcon /> : <Favorite />}
-                    <Typography
-                      component="p"
-                      variant="body1"
-                      sx={{ maxWidth: "max-content" }}
+                    <Stack
+                      direction="column"
+                      px={2}
+                      py={4}
+                      display={{ xs: "none", md: "flex" }}
+                      gap={2}
+                      alignItems="center"
                     >
-                      {isFavorite
-                        ? "Remove from favorites"
-                        : "Add to favorites"}
-                    </Typography>
-                  </Stack>
-                  <Stack
-                    direction="row"
-                    sx={{ cursor: "pointer" }}
-                    gap={1}
-                    onClick={handleAddToWatchlist}
-                  >
-                    {isWatchlist ? <RemoveFromQueueIcon /> : <AddToQueueIcon />}
-                    <Typography component="p" variant="body1">
-                      {isWatchlist
-                        ? "Remove from watchlist"
-                        : "Add to watchlist"}
-                    </Typography>
-                  </Stack>
-                </Stack>
+                      <Box
+                        sx={{ cursor: "pointer" }}
+                        onClick={handleAddToFavorites}
+                      >
+                        {isFavorite ? (
+                          <Stack flexDirection="row" gap={1}>
+                            <NotInterestedIcon />
+                            <Typography component="p" variant="body1">
+                              Remove from favorites{" "}
+                            </Typography>
+                          </Stack>
+                        ) : (
+                          <Stack flexDirection="row" gap={1}>
+                            <Favorite />
+                            <Typography component="p" variant="body1">
+                              Add to favorites
+                            </Typography>
+                          </Stack>
+                        )}
+                      </Box>
+                      <Box
+                        sx={{ cursor: "pointer" }}
+                        onClick={handleAddToWatchlist}
+                      >
+                        {isWatchlist ? (
+                          <Stack flexDirection="row" gap={1}>
+                            <RemoveFromQueueIcon />
+                            <Typography component="p" variant="body1">
+                              Remove from watchlist{" "}
+                            </Typography>
+                          </Stack>
+                        ) : (
+                          <Stack flexDirection="row" gap={1}>
+                            <AddToQueueIcon />
+                            <Typography component="p" variant="body1">
+                              Add to watchlist
+                            </Typography>
+                          </Stack>
+                        )}
+                      </Box>
+                    </Stack>
+                  </motion.div>
+                )}
               </Stack>
 
+              {/* Series information */}
               <Stack
                 gap="1rem"
                 sx={{
@@ -293,7 +334,126 @@ const Series = () => {
                     )
                   )}
                 </Typography>
+
+                {/* Favorites and watchlist buttons for mobile viewport */}
+                {!favoritesData && !watchlistData ? (
+                  ""
+                ) : (
+                  <Stack
+                    direction="column"
+                    px={2}
+                    py={4}
+                    display={{ xs: "flex", md: "none" }}
+                    gap={2}
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Box
+                      sx={{ cursor: "pointer" }}
+                      onClick={handleAddToFavorites}
+                    >
+                      {isFavorite ? (
+                        <Stack flexDirection="row" gap={1}>
+                          <NotInterestedIcon />
+                          <Typography component="p" variant="body1">
+                            Remove from favorites{" "}
+                          </Typography>
+                        </Stack>
+                      ) : (
+                        <Stack flexDirection="row" gap={1}>
+                          <Favorite />
+                          <Typography component="p" variant="body1">
+                            Add to favorites
+                          </Typography>
+                        </Stack>
+                      )}
+                    </Box>
+                    <Box
+                      sx={{ cursor: "pointer" }}
+                      onClick={handleAddToWatchlist}
+                    >
+                      {isWatchlist ? (
+                        <Stack flexDirection="row" gap={1}>
+                          <RemoveFromQueueIcon />
+                          <Typography component="p" variant="body1">
+                            Remove from watchlist{" "}
+                          </Typography>
+                        </Stack>
+                      ) : (
+                        <Stack flexDirection="row" gap={1}>
+                          <AddToQueueIcon />
+                          <Typography component="p" variant="body1">
+                            Add to watchlist
+                          </Typography>
+                        </Stack>
+                      )}
+                    </Box>
+                  </Stack>
+                )}
               </Stack>
+
+              {/* Favorites and watchlist buttons for mobile viewport */}
+
+              {!favoritesData && !watchlistData ? (
+                ""
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1 }}
+                >
+                  <Stack
+                    direction="column"
+                    px={2}
+                    py={4}
+                    display={{ xs: "flex", md: "none" }}
+                    gap={2}
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Box
+                      sx={{ cursor: "pointer" }}
+                      onClick={handleAddToFavorites}
+                    >
+                      {isFavorite ? (
+                        <Stack flexDirection="row" gap={1}>
+                          <NotInterestedIcon />
+                          <Typography component="p" variant="body1">
+                            Remove from favorites{" "}
+                          </Typography>
+                        </Stack>
+                      ) : (
+                        <Stack flexDirection="row" gap={1}>
+                          <Favorite />
+                          <Typography component="p" variant="body1">
+                            Add to favorites
+                          </Typography>
+                        </Stack>
+                      )}
+                    </Box>
+                    <Box
+                      sx={{ cursor: "pointer" }}
+                      onClick={handleAddToWatchlist}
+                    >
+                      {isWatchlist ? (
+                        <Stack flexDirection="row" gap={1}>
+                          <RemoveFromQueueIcon />
+                          <Typography component="p" variant="body1">
+                            Remove from watchlist{" "}
+                          </Typography>
+                        </Stack>
+                      ) : (
+                        <Stack flexDirection="row" gap={1}>
+                          <AddToQueueIcon />
+                          <Typography component="p" variant="body1">
+                            Add to watchlist
+                          </Typography>
+                        </Stack>
+                      )}
+                    </Box>
+                  </Stack>
+                </motion.div>
+              )}
             </Stack>
             <Snackbar
               message={snackbarContent.message}
