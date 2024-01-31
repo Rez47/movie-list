@@ -102,8 +102,6 @@ const Movie = () => {
             setWatchlistData(watchlistDataFetch);
           }
 
-          console.log(favoritesData, watchlistData);
-
           if (favoritesDataFetch) {
             const isThereFavoriteMediaId = favoritesDataFetch.findIndex(
               (item: any) => item.mediaId === id

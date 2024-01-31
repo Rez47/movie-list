@@ -10,7 +10,6 @@ import {
   Stack,
   TextField,
   Typography,
-  useTheme,
 } from "@mui/material";
 import Alert, { AlertType } from "../../components/MUIComponents/Alert";
 import Button from "../../components/MUIComponents/Button";
@@ -47,7 +46,6 @@ const styles = {
 
 const Register = () => {
   const navigate = useNavigate();
-  const theme = useTheme();
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alert, setAlert] = useState<AlertType>({
     message: "",
