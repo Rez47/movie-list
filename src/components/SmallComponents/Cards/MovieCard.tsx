@@ -7,16 +7,25 @@ interface MovieCardProps {
   movieData: Movie;
 }
 
+const styles = {
+  link: {
+    textDecoration: "none",
+    color: "inherit",
+    minWidth: "none",
+  },
+  movieImage: {
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
+    backgroundSize: "cover",
+    borderRadius: "5px",
+    marginBottom: 1,
+    aspectRatio: 4 / 6,
+  },
+};
+
 const MovieCard: React.FC<MovieCardProps> = ({ movieData }) => {
   return (
-    <Link
-      to={`/movie/${movieData.id}`}
-      style={{
-        textDecoration: "none",
-        color: "inherit",
-        minWidth: "none",
-      }}
-    >
+    <Link to={`/movie/${movieData.id}`} style={styles.link}>
       <Card
         sx={{
           bgcolor: "transparent",
@@ -25,13 +34,8 @@ const MovieCard: React.FC<MovieCardProps> = ({ movieData }) => {
       >
         <Box
           sx={{
+            ...styles.movieImage,
             backgroundImage: `url(https://image.tmdb.org/t/p/original${movieData.poster_path})`,
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            backgroundSize: "cover",
-            borderRadius: "5px",
-            marginBottom: 1,
-            aspectRatio: 4 / 6,
           }}
         ></Box>
 

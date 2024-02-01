@@ -12,6 +12,8 @@ import { SearchList, SearchResults } from "../../../services/apiTypes";
 import { callApi } from "../../../services/callApi";
 import { getSearchMulti } from "../../../services/Search/apiGetSearchMulti";
 import { Link } from "react-router-dom";
+import theme from "../../../theme";
+import { motion } from "framer-motion";
 
 interface SearchBarProps {
   iconColor?: string;
@@ -22,6 +24,47 @@ interface SearchBarProps {
   setSearchData?: Dispatch<SetStateAction<SearchResults[]>>;
 }
 
+const styles = {
+  input: {
+    padding: "0 1rem",
+    borderRadius: "0.5rem",
+    border: "0",
+    unset: "all",
+  },
+  resultsContainer: {
+    position: { sx: "initial", sm: "absolute" },
+    maxWidth: { sx: "none", sm: "24rem" },
+    maxHeight: { sx: "none", sm: "27rem" },
+    top: "4rem",
+    left: "0rem",
+    zIndex: "999",
+    overflowY: { sx: "none", sm: "scroll" },
+    backgroundColor: `${theme.palette.primary.main}`,
+    scrollbarWidth: "1rem",
+  },
+  noItemsFound: {
+    textAlign: "center",
+    py: "4rem",
+    px: "5rem",
+    mt: { xs: "1rem", sm: 0 },
+  },
+  resultsItemBox: {
+    ":hover": {
+      backgroundColor: theme.palette.secondary.main,
+      cursor: "pointer",
+    },
+    padding: "1rem",
+    borderRadius: "1rem",
+  },
+  resultsItemImage: {
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
+    backgroundSize: "cover",
+    borderRadius: "5px",
+    marginBottom: 1,
+  },
+};
+
 const SearchBar: React.FC<SearchBarProps> = ({
   iconColor,
   iconMargin,
@@ -31,8 +74,8 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const [isInputOpen, setIsInputOpen] = useState<boolean>(false);
   const [text, setText] = useState<string>("");
   const [searchData, setSearchData] = useState<SearchResults[]>([]);
-  const theme = useTheme();
 
+  // API Call for the search field
   useEffect(() => {
     (async () => {
       try {
@@ -48,6 +91,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
     })();
   }, [text]);
 
+  // Input and input icon functions
   const handleIconClick = () => {
     setIsInputOpen(true);
   };
@@ -73,50 +117,36 @@ const SearchBar: React.FC<SearchBarProps> = ({
             <SearchIcon sx={{ color: iconColor, margin: iconMargin }} />
           </IconButton>
         ) : (
-          <InputBase
-            value={text}
-            onChange={handleInputChange}
-            autoFocus
-            placeholder="Search..."
-            endAdornment={<SearchIcon />}
-            sx={{
-              backgroundColor: inputBackground,
-              margin: inputMargin,
-              padding: "0 1rem",
-              borderRadius: "0.5rem",
-              border: "0",
-              unset: "all",
-            }}
-            inputProps={{
-              style: { border: "none", textDecoration: "none" },
-            }}
-          />
+          <motion.div
+            initial={{ opacity: 0, transform: "translateX(1rem)" }}
+            animate={{ opacity: 1, transform: "translateX(0)" }}
+            transition={{ duration: 1 }}
+          >
+            <InputBase
+              value={text}
+              onChange={handleInputChange}
+              autoFocus
+              placeholder="Search..."
+              endAdornment={<SearchIcon />}
+              sx={{
+                backgroundColor: inputBackground,
+                margin: inputMargin,
+                ...styles.input,
+              }}
+              inputProps={{
+                style: { border: "none", textDecoration: "none" },
+              }}
+            />
+          </motion.div>
         )}
 
-        <Box
-          sx={{
-            position: { sx: "initial", sm: "absolute" },
-            maxWidth: { sx: "none", sm: "24rem" },
-            maxHeight: { sx: "none", sm: "27rem" },
-            top: "4rem",
-            left: "0rem",
-            zIndex: "999",
-            overflowY: { sx: "none", sm: "scroll" },
-            backgroundColor: `${theme.palette.primary.main}`,
-            scrollbarWidth: "1rem",
-          }}
-        >
+        <Box sx={styles.resultsContainer}>
           {text &&
             (searchData.length === 0 ? (
               <Typography
                 component="p"
                 variant="body2"
-                sx={{
-                  textAlign: "center",
-                  py: "4rem",
-                  px: "5rem",
-                  mt: { xs: "1rem", sm: 0 },
-                }}
+                sx={styles.noItemsFound}
               >
                 No items found
               </Typography>
@@ -140,14 +170,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                         margin={2}
                         display={"flex"}
                         gap={2}
-                        sx={{
-                          ":hover": {
-                            backgroundColor: theme.palette.secondary.main,
-                            cursor: "pointer",
-                          },
-                          padding: "1rem",
-                          borderRadius: "1rem",
-                        }}
+                        sx={styles.resultsItemBox}
                       >
                         <Box
                           key={item.id}
@@ -155,11 +178,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
                           height={160}
                           sx={{
                             backgroundImage: `url(https://image.tmdb.org/t/p/original${item.poster_path})`,
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                            backgroundSize: "cover",
-                            borderRadius: "5px",
-                            marginBottom: 1,
+                            ...styles.resultsItemImage,
                           }}
                         ></Box>
                         <Box>

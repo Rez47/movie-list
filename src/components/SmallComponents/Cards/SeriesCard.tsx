@@ -7,12 +7,25 @@ interface SeriesCardProps {
   seriesData: Series;
 }
 
+const styles = {
+  link: {
+    textDecoration: "none",
+    color: "inherit",
+    minWidth: "none",
+  },
+  movieImage: {
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
+    backgroundSize: "cover",
+    borderRadius: "5px",
+    marginBottom: 1,
+    aspectRatio: 4 / 6,
+  },
+};
+
 const SeriesCard: React.FC<SeriesCardProps> = ({ seriesData }) => {
   return (
-    <Link
-      to={`/series/${seriesData.id}`}
-      style={{ textDecoration: "none", color: "inherit" }}
-    >
+    <Link to={`/series/${seriesData.id}`} style={styles.link}>
       <Card
         sx={{
           bgcolor: "transparent",
@@ -21,13 +34,8 @@ const SeriesCard: React.FC<SeriesCardProps> = ({ seriesData }) => {
       >
         <Box
           sx={{
+            ...styles.movieImage,
             backgroundImage: `url(https://image.tmdb.org/t/p/original${seriesData.poster_path})`,
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            backgroundSize: "cover",
-            borderRadius: "5px",
-            marginBottom: 1,
-            aspectRatio: 4 / 6,
           }}
         ></Box>
 

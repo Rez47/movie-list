@@ -4,6 +4,7 @@ import {
   Pagination,
   Stack,
   CircularProgress,
+  Grid,
 } from "@mui/material";
 import {
   Movie,
@@ -21,6 +22,7 @@ import {
 import SeriesCard from "../Cards/SeriesCard";
 import { getPopularSeriesList } from "../../../services/SeriesList/apiGetSeriesList";
 
+// SmallMovieList prop types
 interface SmallMovieListProps {
   title: string;
   moviesData?: Movie[];
@@ -30,6 +32,20 @@ interface SmallMovieListProps {
   nowPlayingMoviesData?: Movie[];
   setNowPlayingMoviesData?: Dispatch<SetStateAction<Movie[]>>;
 }
+
+const styles = {
+  listGrid: {
+    width: "100%",
+    display: "grid",
+    gridTemplateColumns: {
+      xs: "repeat(auto-fit, minmax(120px, max-content))",
+      md: "repeat(auto-fit, minmax(160px, max-content))",
+    },
+    gap: 2,
+    mt: 2,
+    justifyContent: "center",
+  },
+};
 
 const SmallMovieList: React.FC<SmallMovieListProps> = ({
   title,
@@ -48,6 +64,7 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
     ? "nowPlaying"
     : "popular";
 
+  //API calls for the movie lists
   const handleMoviesPageChange = async (
     event: React.ChangeEvent<unknown>,
     value: number
@@ -77,8 +94,7 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
     }
   };
 
-  console.log(moviesData);
-
+  // API calls for the series lists
   const handleSeriesPageChange = async (
     event: React.ChangeEvent<unknown>,
     value: number
@@ -103,19 +119,8 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
       <Typography component="h2" variant="h2">
         {title}
       </Typography>
-      <Box
-        sx={{
-          width: "100%",
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "repeat(auto-fit, minmax(120px, max-content))",
-            md: "repeat(auto-fit, minmax(160px, max-content))",
-          },
-          gap: 2,
-          mt: 2,
-          justifyContent: "center",
-        }}
-      >
+      {/* List Grid */}
+      <Grid sx={styles.listGrid}>
         {moviesData && (
           <>
             {moviesData.length > 0 &&
@@ -166,22 +171,10 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
             )}
           </>
         )}
-      </Box>
+      </Grid>
 
       {seriesData && (
-        <Box
-          sx={{
-            width: "100%",
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "repeat(auto-fit, minmax(120px, max-content))",
-              md: "repeat(auto-fit, minmax(160px, max-content))",
-            },
-            gap: 2,
-            mt: 2,
-            justifyContent: "center",
-          }}
-        >
+        <Grid sx={styles.listGrid}>
           {seriesData.length > 0 &&
             seriesData.map((seriesData) => {
               return <SeriesCard seriesData={seriesData} />;
@@ -203,7 +196,7 @@ const SmallMovieList: React.FC<SmallMovieListProps> = ({
               </Typography>
             </Stack>
           )}
-        </Box>
+        </Grid>
       )}
       <Stack spacing={2} justifyContent="center" alignItems="center" mt={4}>
         <Pagination
