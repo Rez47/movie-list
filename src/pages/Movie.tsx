@@ -72,6 +72,7 @@ const Movie = () => {
     message: "",
     severity: "success",
   });
+  console.log(favoritesData, watchlistData);
 
   useEffect(() => {
     (async () => {
@@ -123,7 +124,6 @@ const Movie = () => {
       }
     })();
   }, [id, currentUser]);
-  console.log(currentUser);
 
   const handleAddToFavorites = async () => {
     if (!movieData) return;
@@ -189,7 +189,7 @@ const Movie = () => {
                 </Box>
 
                 {/* Favorites and Watchlist buttons for desktop viewport */}
-                {!favoritesData && !watchlistData ? (
+                {currentUser.email === "" ? (
                   ""
                 ) : (
                   <motion.div

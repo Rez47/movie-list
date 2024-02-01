@@ -10,6 +10,7 @@ import { getDocument } from "../../helpers/firestore";
 const Profile = () => {
   const user = useSelector((state: RootState) => state.user.currentUser);
   const [favouritesData, setFavouritesData] = useState<string[]>();
+  const [watchListData, setWatchListData] = useState<string[]>();
 
   useEffect(() => {
     (async () => {
@@ -18,12 +19,16 @@ const Profile = () => {
         user.email
       );
 
+      const watchListData: string[] = await getDocument(
+        "watchlist",
+        user.email
+      );
+
+      if (watchListData) setWatchListData(watchListData);
+
       if (favouriteMediaData) setFavouritesData(favouriteMediaData);
     })();
   }, [user]);
-
-  // TODO: fetch watchListData and display
-  // TODO: ?? add skeleton or better UI for loading
 
   return (
     <Layout>
@@ -71,9 +76,20 @@ const Profile = () => {
             <Box>
               <Typography>
                 Number of liked media:{" "}
-                {favouritesData ? favouritesData.length : "Loading..."}
+                {favouritesData
+                  ? favouritesData.length === 0
+                    ? "No media"
+                    : favouritesData.length
+                  : "Loading..."}
               </Typography>
-              <Typography>Number of media in watch list: N/a</Typography>
+              <Typography>
+                Number of media in watch list:{" "}
+                {watchListData
+                  ? watchListData.length === 0
+                    ? "No media"
+                    : watchListData.length
+                  : "Loading..."}
+              </Typography>
             </Box>
 
             <Box display={"flex"} flexDirection={"column"} gap={1} mt={6}>
