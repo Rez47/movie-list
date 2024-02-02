@@ -1,11 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import {
-  Box,
-  ClickAwayListener,
-  InputBase,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, ClickAwayListener, InputBase, Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import { SearchList, SearchResults } from "../../../services/apiTypes";
@@ -112,16 +106,19 @@ const SearchBar: React.FC<SearchBarProps> = ({
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <Box sx={{ position: "relative" }}>
+        {/* Search icon and field */}
         {!isInputOpen ? (
           <IconButton onClick={handleIconClick} onMouseEnter={handleMouseEnter}>
             <SearchIcon sx={{ color: iconColor, margin: iconMargin }} />
           </IconButton>
         ) : (
           <motion.div
+            key="inputfield"
             initial={{ opacity: 0, transform: "translateX(1rem)" }}
             animate={{ opacity: 1, transform: "translateX(0)" }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 1, ease: "easeInOut" }}
           >
+            {/* Search input field */}
             <InputBase
               value={text}
               onChange={handleInputChange}
@@ -139,69 +136,81 @@ const SearchBar: React.FC<SearchBarProps> = ({
             />
           </motion.div>
         )}
-
-        <Box sx={styles.resultsContainer}>
-          {text &&
-            (searchData.length === 0 ? (
-              <Typography
-                component="p"
-                variant="body2"
-                sx={styles.noItemsFound}
-              >
-                No items found
-              </Typography>
-            ) : (
-              <Box>
-                {searchData.map((item) => {
-                  if (!item.poster_path) {
-                    return "";
-                  }
-                  return (
-                    <Link
-                      to={
-                        item.media_type === "tv"
-                          ? `/series/${item.id}`
-                          : `/movie/${item.id}`
+        {/* Search results dropdown field */}
+        {text ? (
+          // animation for the search results container
+          <motion.div
+            key={"searchResultsContainer"}
+            initial={{ opacity: 0.5, transform: "translateY(-1rem)" }}
+            animate={{ opacity: 1, transform: "translateY(0)" }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+            style={{ zIndex: 1 }}
+          >
+            {/* Search result container */}
+            <Box sx={styles.resultsContainer}>
+              {text &&
+                (searchData.length === 0 ? (
+                  <Typography
+                    component="p"
+                    variant="body2"
+                    sx={styles.noItemsFound}
+                  >
+                    No items found
+                  </Typography>
+                ) : (
+                  <Box>
+                    {searchData.map((item) => {
+                      if (!item.poster_path) {
+                        return "";
                       }
-                      style={{ textDecoration: "none", color: "inherit" }}
-                      onClick={() => setText("")}
-                    >
-                      <Box
-                        margin={2}
-                        display={"flex"}
-                        gap={2}
-                        sx={styles.resultsItemBox}
-                      >
-                        <Box
-                          key={item.id}
-                          minWidth={120}
-                          height={160}
-                          sx={{
-                            backgroundImage: `url(https://image.tmdb.org/t/p/original${item.poster_path})`,
-                            ...styles.resultsItemImage,
-                          }}
-                        ></Box>
-                        <Box>
-                          <Typography component="p" variant="body1">
-                            {item.title}
-                          </Typography>
-                          <Typography component="p" variant="body2">
-                            IMDb Score: {item.vote_average}
-                          </Typography>
-                          <Typography component="p" variant="body1">
-                            {item.release_date || item.first_air_date}
-                          </Typography>
-                          <Typography>
-                            {item.media_type !== "tv" ? "Movie" : "Series"}
-                          </Typography>
-                        </Box>
-                      </Box>
-                    </Link>
-                  );
-                })}
-              </Box>
-            ))}
-        </Box>
+                      return (
+                        <Link
+                          to={
+                            item.media_type === "tv"
+                              ? `/series/${item.id}`
+                              : `/movie/${item.id}`
+                          }
+                          style={{ textDecoration: "none", color: "inherit" }}
+                          onClick={() => setText("")}
+                        >
+                          <Box
+                            margin={2}
+                            display={"flex"}
+                            gap={2}
+                            sx={styles.resultsItemBox}
+                          >
+                            <Box
+                              key={item.id}
+                              minWidth={120}
+                              height={160}
+                              sx={{
+                                backgroundImage: `url(https://image.tmdb.org/t/p/original${item.poster_path})`,
+                                ...styles.resultsItemImage,
+                              }}
+                            ></Box>
+                            <Box>
+                              <Typography component="p" variant="body1">
+                                {item.title}
+                              </Typography>
+                              <Typography component="p" variant="body2">
+                                IMDb Score: {item.vote_average}
+                              </Typography>
+                              <Typography component="p" variant="body1">
+                                {item.release_date || item.first_air_date}
+                              </Typography>
+                              <Typography>
+                                {item.media_type !== "tv" ? "Movie" : "Series"}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </Link>
+                      );
+                    })}
+                  </Box>
+                ))}
+            </Box>
+          </motion.div>
+        ) : null}
       </Box>
     </ClickAwayListener>
   );

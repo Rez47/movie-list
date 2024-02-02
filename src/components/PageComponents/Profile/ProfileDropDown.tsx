@@ -43,10 +43,12 @@ const ProfileNav = () => {
 
   return (
     <Box sx={{ flexGrow: 0 }}>
+      {/* Menu icon */}
       <IconButton onClick={handleOpenUserMenu}>
         <AccountCircleIcon sx={{ fontSize: "2.5rem", mr: "1rem" }} />
       </IconButton>
 
+      {/* User menu */}
       <Menu
         sx={{ mt: "45px" }}
         anchorEl={anchorElUser}
@@ -74,6 +76,8 @@ const ProfileNav = () => {
         >
           {user.email !== "" ? `Hello, ${user.email}` : ""}
         </Typography>
+
+        {/* Menu buttons */}
         {userDropDownPages.map((userDropDownPage, index) => (
           <Link
             href={userDropDownPage.link}
@@ -114,11 +118,7 @@ const ProfileNav = () => {
             <LogoutIcon
               sx={{ color: theme.palette.text.secondary, mr: "0.5rem" }}
             />
-            <Typography
-              sx={{
-                color: theme.palette.common.black,
-              }}
-            >
+            <Typography sx={{ color: theme.palette.common.black }}>
               {user.email !== "" ? "Logout" : "Login"}
             </Typography>
           </MenuItem>

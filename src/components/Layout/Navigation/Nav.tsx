@@ -8,8 +8,7 @@ import { headerPages } from "./pages";
 import { useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useDispatch } from "react-redux";
-import { login, logout } from "../../../store/slices/userSlices";
-import { current } from "@reduxjs/toolkit";
+import { login } from "../../../store/slices/userSlices";
 
 const Nav = () => {
   const dispatch = useDispatch();
