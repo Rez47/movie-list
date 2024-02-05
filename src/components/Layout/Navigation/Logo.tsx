@@ -3,12 +3,22 @@ import AdbIcon from "@mui/icons-material/Adb";
 
 const Logo = () => {
   return (
-    <Box sx={{ ml: "2rem" }}>
+    <Box>
       <Link href="/" sx={{ textDecoration: "none" }}>
         <Stack direction="row" justifyContent="center" alignItems="center">
-          <AdbIcon sx={{ mr: 1 }} />
+          <Box
+            component="image"
+            sx={{
+              backgroundImage: "url(./Logo1.svg)",
+              width: "2rem",
+              height: "2rem",
+              backgroundSize: "contain",
+              mx: "2rem",
+              ml: { xs: "2rem", sm: "4rem" },
+            }}
+          ></Box>
           <Typography
-            variant="h5"
+            variant="h3"
             noWrap
             component="a"
             sx={{
