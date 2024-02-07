@@ -9,12 +9,13 @@ const Logo = () => {
           <Box
             component="image"
             sx={{
-              backgroundImage: "url(./Logo1.svg)",
-              width: "2rem",
-              height: "2rem",
+              backgroundImage: "url(./Logo2.svg)",
+              width: "1.8rem",
+              height: "1.8rem",
               backgroundSize: "contain",
               mx: "2rem",
               ml: { xs: "2rem", sm: "4rem" },
+              mb: "0.1rem",
             }}
           ></Box>
           <Typography
